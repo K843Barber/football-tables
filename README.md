@@ -1,4 +1,4 @@
-# football-tables
+# football-tables :grinning:
 
 A way to extract football tables and see them right in your command line!
 
