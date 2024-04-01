@@ -6,9 +6,12 @@
 import argparse, argcomplete  # noqa: E401
 from argcomplete.completers import ChoicesCompleter
 
+from json import load
 from get_table import get_table
 from show_table import  enrich_table, give_dataframe
 
+with open(".config/configuration.json") as f:
+    choices = tuple(load(f)['league'])
 
 mainParser = argparse.ArgumentParser()
 subparsers = mainParser.add_subparsers(dest='command')
@@ -16,11 +19,7 @@ subparsers = mainParser.add_subparsers(dest='command')
 # --------------- Get ---------------
 get = subparsers.add_parser('get')
 get.add_argument('--league', 
-                help='Choose league').completer = ChoicesCompleter(('Premier_League', 
-                                                                    'Ligue_1', 
-                                                                    'Serie_A', 
-                                                                    'Bundesliga', 
-                                                                    'La_Liga')) 
+                help='Choose league').completer = ChoicesCompleter(choices) 
 get.add_argument('--season', 
                  nargs=2, 
                  help='Choose season')
@@ -29,11 +28,7 @@ argcomplete.autocomplete(get)
 # --------------- Show ---------------
 show = subparsers.add_parser('show')
 show.add_argument('--league', 
-                  help='Select league').completer = ChoicesCompleter(('Premier_League', 
-                                                                      'Ligue_1', 
-                                                                      'Serie_A', 
-                                                                      'Bundesliga', 
-                                                                      'La_Liga'))
+                  help='Select league').completer = ChoicesCompleter(choices)
 show.add_argument('--season', 
                   nargs=2, 
                   help='Select season')
