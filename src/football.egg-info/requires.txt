@@ -1,8 +1,0 @@
-argparse
-rich
-pandas
-numpy
-bs4
-requests
-inquirer
-typing
