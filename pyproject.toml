@@ -11,7 +11,7 @@ dependencies = ["argcomplete", "argparse","rich","pandas","numpy","bs4","request
 # requires-python = ">=3.8"
 
 [project.scripts]
-lunch = "football.__main__:main"
+football = "football.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
