@@ -1,15 +1,68 @@
+[build-system]
+requires = ["setuptools>=65", "setuptools-scm[toml]"]
+build-backend = "setuptools.build_meta"
+
 [project]
-requires-python = ">=3.10"
+name = "football"
+description = "Footingtons!"
+dynamic = ["version"]
+dependencies = ["argparse","rich","pandas","numpy","bs4","requests","inquirer","typing"]
+
+# requires-python = ">=3.8"
+
+[project.scripts]
+lunch = "football.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+[tool.setuptools_scm]
+
+# ----------------------------------------------------------------
+# Linter and formatter settings
+# ----------------------------------------------------------------
+[tool.black]
+line-length = 120
+
+[tool.mypy]
+ignore_missing_imports = true
 
 [tool.ruff]
-line-length = 90
-indent-width = 4
+line-length = 120
 
 [tool.ruff.lint]
-extend-select=[
-  "E501",
-  "D"
-  ]
+ignore = [
+    "B017",
+    "D1",
+    "D203",
+    "D204",
+    "D205",
+    "D211",
+    "D212",
+    "G004",
+    "N818",
+    "PT004",
+    "S101",
+    "UP035",
+]
 
-[tool.ruff.lint.pydocstyle]
-convention = "google"
+select = [
+    "ARG",
+    "B",
+    "BLE",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "I",
+    "N",
+    "PIE",
+    "PL",
+    "PT",
+    "RUF",
+    "S",
+    "UP",
+    "W",
+]

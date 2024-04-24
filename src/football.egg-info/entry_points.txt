@@ -1,0 +1,2 @@
+[console_scripts]
+lunch = football.__main__:main

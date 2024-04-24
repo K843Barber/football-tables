@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: football
+Version: 0.1.dev5+g4ec9554.d20240424
+Summary: Footingtons!
+Requires-Dist: argparse
+Requires-Dist: rich
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: bs4
+Requires-Dist: requests
+Requires-Dist: inquirer
+Requires-Dist: typing
