@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "football"
 description = "Footingtons!"
 dynamic = ["version"]
-dependencies = ["argparse","rich","pandas","numpy","bs4","requests","inquirer","typing"]
+dependencies = ["argcomplete", "argparse","rich","pandas","numpy","bs4","requests","inquirer","typing"]
 
 # requires-python = ">=3.8"
 
