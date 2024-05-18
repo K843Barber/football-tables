@@ -3,12 +3,12 @@ from bs4 import BeautifulSoup
 
 
 def get_table(
-        league: str, 
+        league: str,
         season_start: str,
         season_end: str,
         ) -> None:
     """
-    A function to extract a season table from top five leagues.
+    Needed to extract a season table from top five leagues.
 
     Args:
     ----
@@ -17,10 +17,10 @@ def get_table(
         season_end: The year the end of the season occurs.
 
     """
-    keyword1 = ["Qualification", "Relegation", "Serie "]
+    keyword1 = ["Qualification", "Relegation", "Serie ", "Champions ", "Europa "]
 
     url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end}_{league}"
-    page = requests.get(url)
+    page = requests.get(url)  # noqa: S113
     soup = BeautifulSoup(page.text, "html.parser")
     tabs = soup.find('table', {'class': 'wikitable', 'style': 'text-align:center;'})
     rows = tabs.find_all('tr')
