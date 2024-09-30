@@ -1,10 +1,12 @@
 from typing import Optional
 
 import pandas as pd
-from pandas import DataFrame
+from pandas import concat, DataFrame, merge
 from rich import box
 from rich.console import Console
 from rich.table import Table
+
+from typing import List
 
 console = Console()
 
@@ -130,3 +132,42 @@ def enrich_table(
     table.title = f"{league} {season_start}-{season_end}"
 
     console.print(table)
+
+
+def all_time_table(league: str, seasons: List):
+    all_time_table = DataFrame(columns=['Pos', 'Team', 'Pld', 'W', 'D', 
+                                      'L', 'GF', 'GA', 'GD', 'Pts'])
+    import re
+    dfs = []
+    for season in seasons:
+        print(season)
+        if int(season) > 50:
+            df = give_dataframe(league, f"19{season}", str(int(season)+1))
+        else:
+            df = give_dataframe(league, f"20{season}", str(int(season)+1))
+        print(df['Team'])
+        # df['Team'] = [re.findall(r'[A-Za-z]+', line) for line in df['Team']]
+        df['Team'] = df['Team'].str.replace(r'\(.*\)', '', regex=True)
+        df['Team'] = df["Team"].str.rstrip(" ")
+        print(df['Team'])
+        dfs.append(df)
+
+        
+
+    all_time_table = DataFrame(concat(dfs))
+    # print(merge(dfs, on="Team", right="Team"))
+    all_time_table['Pos'] = all_time_table['Pos'].astype(int)
+    all_time_table['Pts'] = all_time_table['Pts'].astype(int)
+    all_time_table['Pld'] = all_time_table['Pld'].astype(int)
+    all_time_table['W'] = all_time_table['W'].astype(int)
+    all_time_table['D'] = all_time_table['D'].astype(int)
+    all_time_table['L'] = all_time_table['L'].astype(int)
+    all_time_table['GF'] = all_time_table['GF'].astype(int)
+    all_time_table['GA'] = all_time_table['GA'].astype(int)
+    print(all_time_table)
+    new = all_time_table.groupby(by="Team", as_index=False)
+    print(DataFrame(new.sum()).sort_values("Pts", ascending=False))
+    # print(all_time_table[all_time_table['Team'] == "Manchester United"])
+
+
+print(all_time_table("Premier_League", ["92","93","94", "19"]))
