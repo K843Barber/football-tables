@@ -1,5 +1,5 @@
-import requests
-from bs4 import BeautifulSoup
+import requests  # type: ignore
+from bs4 import BeautifulSoup  # type: ignore
 
 
 def get_table(
@@ -17,7 +17,7 @@ def get_table(
         season_end: The year the end of the season occurs.
 
     """
-    keyword1 = ["Qualification", "Relegation", "Serie ", "Champions ", "Europa "]
+    keyword1 = ["Qualification", "Relegation", "Serie ", "Champions ", "Europa ", "Excluded", "Intertoto", "UEFA"]
 
     url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end}_{league}"
     page = requests.get(url)  # noqa: S113
