@@ -1,19 +1,20 @@
 import re
 from typing import List, Optional
 
-import pandas as pd  # type: ignore
-from pandas import DataFrame, concat  #, merge  # type: ignore
-from rich import box  # type: ignore
-from rich.console import Console  # type: ignore
-from rich.table import Table  # type: ignore
+import pandas as pd
+from pandas import DataFrame, concat
+from rich import box
+from rich.console import Console
+from rich.table import Table
 
 console = Console()
 
+
 def give_dataframe(
-        league: str,
-        season_start: str,
-        season_end: str,
-        ) -> DataFrame:
+    league: str,
+    season_start: str,
+    season_end: str,
+) -> DataFrame:
     """
     Convert a standardized txt file into a DataFrame.
 
@@ -33,10 +34,10 @@ def give_dataframe(
     try:
         with open(f"data/{league}-{season_start}-{season_end}.txt") as f:
             lines = f.readlines()
-    except FileNotFoundError("File does not exist"):
-        raise FileNotFoundError("File does not exist")  # noqa: B904
+    except FileNotFoundError():
+        print("File does not exist")
 
-    table = [lines[x:x+10] for x in range(0, len(lines), 10)]
+    table = [lines[x : x + 10] for x in range(0, len(lines), 10)]
     table = [[i.strip() for i in j] for j in table]
 
     table1 = []
@@ -46,9 +47,9 @@ def give_dataframe(
         i[0] = tmp
         table1.append(i)
 
-    return DataFrame(table1, columns=['Pos', 'Team', 'Pld', 'W', 'D',
-                                      'L', 'GF', 'GA', 'GD', 'Pts'])
+    cols = ["Pos", "Team", "Pld", "W", "D", "L", "GF", "GA", "GD", "Pts"]
 
+    return DataFrame(table1, columns=cols)
 
 
 def df_to_table(
@@ -87,11 +88,11 @@ def df_to_table(
 
 
 def enrich_table(
-        datatable: pd.DataFrame,
-        league: str,
-        season_start: str,
-        season_end: str,
-        ) -> None:
+    datatable: pd.DataFrame,
+    league: str,
+    season_start: str,
+    season_end: str,
+) -> None:
     """
     Add rich customization to the table.
 
@@ -110,27 +111,28 @@ def enrich_table(
     table = df_to_table(datatable, table)
 
     # Update the style of the table
-    table.row_styles = ["green",
-                        "green",
-                        "green",
-                        "green",
-                        "orange3",
-                        "orange3",
-                        "orange3",
-                        "white",
-                        "white",
-                        "white",
-                        "white",
-                        "white",
-                        "white",
-                        "white",
-                        "white",
-                        "white",
-                        "white",
-                        "red",
-                        "red",
-                        "red",
-                        ]
+    table.row_styles = [
+        "green",
+        "green",
+        "green",
+        "green",
+        "orange3",
+        "orange3",
+        "orange3",
+        "white",
+        "white",
+        "white",
+        "white",
+        "white",
+        "white",
+        "white",
+        "white",
+        "white",
+        "white",
+        "red",
+        "red",
+        "red",
+    ]
     table.box = box.DOUBLE_EDGE
     table.title = f"{league} {season_start}-{season_end}"
 
@@ -138,38 +140,35 @@ def enrich_table(
 
 
 def all_time_table(league: str, seasons: List):
-    cols = ['Pos', 'Team', 'Pld', 'W', 'D', 'L', 'GF', 'GA', 'GD', 'Pts']
+    cols = ["Pos", "Team", "Pld", "W", "D", "L", "GF", "GA", "GD", "Pts"]
     all_time_table = DataFrame(columns=cols)
 
     dfs = []
     marker = 50
     for season in seasons:
         if int(season) > marker:
-            df = give_dataframe(league, f"19{season}", str(1900 + int(season)+1)[-2:])
+            df = give_dataframe(league, f"19{season}", str(1900 + int(season) + 1)[-2:])
         else:
-            df = give_dataframe(league, f"20{season}", str(2000 + int(season)+1)[-2:])
+            df = give_dataframe(league, f"20{season}", str(2000 + int(season) + 1)[-2:])
 
-        df['Team'] = df['Team'].str.replace(r'\(.*\)', '', regex=True)
-        df['Pts'] = df['Pts'].str.replace(r'\[.*\]', '', regex=True)
-        df['Team'] = df["Team"].str.rstrip(" ")
+        df["Team"] = df["Team"].str.replace(r"\(.*\)", "", regex=True)
+        df["Pts"] = df["Pts"].str.replace(r"\[.*\]", "", regex=True)
+        df["Team"] = df["Team"].str.rstrip(" ")
 
         dfs.append(df)
 
     all_time_table = DataFrame(concat(dfs))
 
-    columns = ['Pos','Pts','Pld','W','D','L','GF','GA']
+    columns = ["Pos", "Pts", "Pld", "W", "D", "L", "GF", "GA"]
     all_time_table[columns] = all_time_table[columns].astype(int)
 
     def _me_rule():
-        return lambda row: sum(map(int, re.findall(r'(\d+|-\d+)', row)))
+        return lambda row: sum(map(int, re.findall(r"(\d+|-\d+)", row)))
 
-    all_time_table['GD'] = all_time_table['GD'].apply(_me_rule())
+    all_time_table["GD"] = all_time_table["GD"].apply(_me_rule())
 
     new = all_time_table.groupby(by="Team", as_index=False).sum()
     df = DataFrame(new).sort_values("Pts", ascending=False).reset_index(drop=True)
-    df.index = df.index+1
+    df.index = df.index + 1
 
     console.print(df)
-
-
-

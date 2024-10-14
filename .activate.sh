@@ -17,4 +17,3 @@ else
     create_venv &
     python3 --version --version
 fi
-

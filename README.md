@@ -10,11 +10,10 @@ Only tested in `src/football/`, but in here, run something like: `football get -
 
 ## Features
 
-Includes 
+Includes
     - autocompletion from `argcomplete` for the top 5 leagues
 
 ## TODO
 
     - Update options for season
     - Create a super table that would include all tables collected
-
