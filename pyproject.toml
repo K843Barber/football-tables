@@ -6,7 +6,20 @@ build-backend = "setuptools.build_meta"
 name = "football"
 description = "Footingtons!"
 dynamic = ["version"]
-dependencies = ["argcomplete", "argparse","rich","pandas","numpy","bs4","requests","inquirer","typing", "pre-commit"]
+dependencies = [
+    "argcomplete",
+    "argparse",
+    "rich",
+    "pandas",
+    "numpy",
+    "bs4",
+    "requests",
+    "inquirer",
+    "typing",
+    "pre-commit",
+    "textual",
+    "textual_serve",
+]
 
 # requires-python = ">=3.8"
 
@@ -23,30 +36,15 @@ namespaces = false
 # Linter and formatter settings
 # ----------------------------------------------------------------
 [tool.black]
-line-length = 120
+line-length = 90
 
 [tool.mypy]
 ignore_missing_imports = true
 
 [tool.ruff]
-line-length = 120
+line-length = 90
 
 [tool.ruff.lint]
-ignore = [
-    "B017",
-    "D1",
-    "D203",
-    "D204",
-    "D205",
-    "D211",
-    "D212",
-    "G004",
-    "N818",
-    "PT004",
-    "S101",
-    "UP035",
-]
-
 select = [
     "ARG",
     "B",

@@ -5,3 +5,4 @@ football.egg-info/
 src/football/my_debugger.py
 src/football/__pycache__/
 !src/football/.gitkeep
+src/football/.vscode

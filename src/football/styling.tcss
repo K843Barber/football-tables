@@ -1,0 +1,13 @@
+.table {
+    height: auto;
+    width: auto;
+    border: solid round pink;
+}
+.table_container {
+    border: solid round magenta;
+    height: auto;
+}
+.inner_container {
+    border: solid round cyan;
+    height: auto;
+}
