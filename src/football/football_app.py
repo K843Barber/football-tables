@@ -1,10 +1,10 @@
-from tkinter import S
 from pandas import DataFrame
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, HorizontalScroll
 from textual.widgets import DataTable, Static
 from textual_serve.server import Server
+
 from football.show_table import read_results
 
 
@@ -41,12 +41,14 @@ class FootballApp(App):
 
     CSS_PATH = "styling.tcss"
 
-    def __init__(self, df, path, start, end):
+    def __init__(self, df, path, start, end, all_time):
         """Initialise df with data."""
         self.df = df
         self.path = path
         self.start = start
         self.end = end
+        self.all_time = all_time
+
         super().__init__()
 
     def compose(self) -> ComposeResult:
@@ -73,10 +75,17 @@ class FootballApp(App):
 
         if "(C)" in datapoint or "(R)" in datapoint:
             datapoint = datapoint.split("(")[0].strip()
-        if len(datapoint) > 3:
-            data = read_results(datapoint, self.path, self.start, self.end)
+
+        magic_val = 3
+
+        if not self.all_time:
+            if len(datapoint) > magic_val:
+                data = read_results(datapoint, self.path, self.start, self.end)
+            else:
+                data = ""
         else:
-            data = ""
+            data = "Can get results with: \
+                  \n\n`football get_game league season_start season_end"
 
         self.wicked_wango.update(data)
 

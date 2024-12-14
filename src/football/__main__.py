@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-# PYTHON_ARGCOMPLETE_OK
-
-"""Add a configuration file, so we have some generics to store."""
-
-import argparse
+import argparse  # noqa: D100
 from json import load
 
 from football.football_app import FootballApp, run_on_server
@@ -78,12 +73,12 @@ def main():
     elif args.command == "interactive":
         if int(season_end) - int(f"{season_start[2:]}") == 1:
             df = convert_data_to_df(league, season_start, season_end)
+            FootballApp(df, league, season_start, season_end, False).run()
         else:
             ss, se, ll = season_start, season_end, league
             df = all_time_table(ll, [str(i) for i in range(int(ss), int(se), 1)])
+            FootballApp(df, league, season_start, season_end, True).run()
 
-        FootballApp(df, league, season_start, season_end).run()
-        # HomeScreen(df, league, season_start, season_end)
     elif args.command == "show_seasons":
         show_added_seasons(league)
     elif args.command == "get_game":
