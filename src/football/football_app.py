@@ -1,8 +1,10 @@
+from importlib.metadata import version
+
 from pandas import DataFrame
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, HorizontalScroll
-from textual.widgets import DataTable, Static
+from textual.widgets import DataTable, Digits, Static
 from textual_serve.server import Server
 
 from football.show_table import read_results
@@ -53,6 +55,7 @@ class FootballApp(App):
 
     def compose(self) -> ComposeResult:
         """Generate content."""
+        yield Digits(str(version("football")))
         with Horizontal(classes="table_container") as right:
             dataframe = FootballDataTable(classes="table")
             dataframe.border_title = "Table"
