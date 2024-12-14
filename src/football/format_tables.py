@@ -28,6 +28,7 @@ def give_dataframe(
         Table: A Pandas DataFrame.
 
     """
+    season_end = season_end[2:]
     try:
         with open(f"data/{league}-{season_start}-{season_end}.txt") as f:
             lines = f.readlines()
@@ -128,6 +129,7 @@ def enrich_table(
         "red",
         "red",
     ]
+    season_end = season_end[2:]
     table.box = box.DOUBLE_EDGE
     table.title = f"{league} {season_start}-{season_end}"
 

@@ -9,5 +9,13 @@
 }
 .inner_container {
     border: solid round cyan;
-    height: auto;
+    height: 23;
+}
+.version_label {
+    color: green;
+    text-style: bold;
+}
+.version_value {
+    color: yellow;
+    text-style: bold;
 }

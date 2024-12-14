@@ -1,6 +1,7 @@
 import requests  # noqa: D100
 from bs4 import BeautifulSoup
 from pandas import DataFrame
+from rich.console import Console
 
 
 def get_table(
@@ -27,11 +28,9 @@ def get_table(
         "Intertoto",
         "UEFA",
     ]
-
+    # season_end = season_end[2:]
     if league != "Allsvenskan":
-        url = (
-            f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end}_{league}"
-        )
+        url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end[2:]}_{league}"
     else:
         url = f"https://en.wikipedia.org/wiki/{season_start}_{league}"
 
@@ -60,38 +59,47 @@ def get_table(
 
 def get_game_results(league: str, season_start: str, season_end: str) -> None:
     """Get league results for all teams."""
-    url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end}_{league}"
 
-    page = requests.get(url)  # noqa: S113
-    soup = BeautifulSoup(page.text, "html.parser")
-    tabs = soup.find(
-        "table",
-        {
-            "class": "wikitable plainrowheaders",
-            "style": "text-align:center;font-size:100%;",
-        },
-    )
+    def _grab_results():
+        url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end[2:]}_{league}"
 
-    rows = tabs.find_all("tr")
+        page = requests.get(url)  # noqa: S113
+        soup = BeautifulSoup(page.text, "html.parser")
+        tabs = soup.find(
+            "table",
+            {
+                "class": "wikitable plainrowheaders",
+                "style": "text-align:center;font-size:100%;",
+            },
+        )
 
-    lookup_table: dict = {}
-    season_results = []
-    for en, row in enumerate(rows):
-        for cell in row.find_all("th"):
-            if en == 0:
-                continue
-            if cell.text.strip("\n") not in lookup_table:
-                lookup_table[en] = cell.text.strip("\n")
+        rows = tabs.find_all("tr")
 
-    for home, row in enumerate(rows):
-        for away, cell in enumerate(row.find_all("td"), start=1):
-            h, a = lookup_table[home], lookup_table[away]
-            res = cell.text.strip("\n")
-            season_results.append((h, res, a))
+        lookup_table: dict = {}
+        season_results = []
+        for en, row in enumerate(rows):
+            for cell in row.find_all("th"):
+                if en == 0:
+                    continue
+                if cell.text.strip("\n") not in lookup_table:
+                    lookup_table[en] = cell.text.strip("\n")
 
-    df = DataFrame(season_results, columns=["Home", "Result", "Away"])
+        for home, row in enumerate(rows):
+            for away, cell in enumerate(row.find_all("td"), start=1):
+                h, a = lookup_table[home], lookup_table[away]
+                res = cell.text.strip("\n")
+                season_results.append((h, res, a))
 
-    df = df[df["Home"] != df["Away"]]
-    df = df[df["Result"] != ""]
-    df = df[df["Result"] != "a"]
+        df = DataFrame(season_results, columns=["Home", "Result", "Away"])
+
+        df = df[df["Home"] != df["Away"]]
+        df = df[df["Result"] != ""]
+        df = df[df["Result"] != "a"]
+        return df
+
+    console = Console()
+
+    with console.status("Processing..."):
+        df = _grab_results()
+
     df.to_csv(f"data/{league}_{season_start}_{season_end}_results.csv", index=False)

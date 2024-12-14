@@ -19,10 +19,10 @@ def all_time_table(league: str, seasons: list):
     dfs = []
     marker = 50
     for season in seasons:
-        # print(season)
+        print(season, str(int(season) + 1)[-2:])
 
         if int(season) > marker:
-            df = give_dataframe(league, f"{season}", str(1900 + int(season) + 1)[-2:])
+            df = give_dataframe(league, f"{season}", str(1900 + int(season) + 1)[:])
         else:
             df = give_dataframe(league, f"{season}", str(2000 + int(season) + 1)[-2:])
 
