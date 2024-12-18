@@ -6,10 +6,12 @@
 .table_container {
     border: solid round magenta;
     height: auto;
+    width: auto;
 }
 .inner_container {
     border: solid round cyan;
     height: 23;
+    width: 50;
 }
 .version_label {
     color: green;
@@ -18,4 +20,35 @@
 .version_value {
     color: yellow;
     text-style: bold;
+}
+.h2h {
+    border: solid round cyan;
+    height: 1fr;
+    width: 1fr;
+}
+.h2h_container {
+    border: solid round magenta;
+    height: 20;
+    width: auto;
+}
+.team1 {
+    text-align: center;
+}
+.team2 {
+    text-align: center;
+}
+.statistics_container {
+    width: 1fr;
+    height: auto;
+    border: solid round cyan;
+}
+.results_container {
+    width: 50;
+    height: 20;
+    border: solid round green;
+}
+.base_stats {
+    width: 1fr;
+    height: 20;
+    border: solid round green;
 }

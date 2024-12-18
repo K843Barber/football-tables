@@ -1,4 +1,6 @@
-import requests  # noqa: D100
+from pathlib import Path  # noqa: D100
+
+import requests
 from bs4 import BeautifulSoup
 from pandas import DataFrame
 from rich.console import Console
@@ -28,7 +30,6 @@ def get_table(
         "Intertoto",
         "UEFA",
     ]
-    # season_end = season_end[2:]
     if league != "Allsvenskan":
         url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end[2:]}_{league}"
     else:
@@ -52,7 +53,11 @@ def get_table(
                 if cell.text.strip() != "":
                     table.append(cell.text.strip())
 
-    with open(f"data/{league}-{season_start}-{season_end}.txt", "w") as f:
+    path = Path.cwd() / "data" / league
+    path.mkdir(parents=True, exist_ok=True)
+    filepath = path / f"{season_start}_{season_end}.txt"
+
+    with filepath.open("w") as f:
         for i in table[10:]:
             f.writelines(f"{i}\n")
 
@@ -102,4 +107,5 @@ def get_game_results(league: str, season_start: str, season_end: str) -> None:
     with console.status("Processing..."):
         df = _grab_results()
 
-    df.to_csv(f"data/{league}_{season_start}_{season_end}_results.csv", index=False)
+    path = Path.cwd() / "data" / league / f"{season_start}_{season_end}_results.csv"
+    df.to_csv(path, index=False)

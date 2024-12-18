@@ -1,5 +1,5 @@
 from typing import Optional  # noqa: D100
-
+from pathlib import Path
 from pandas import DataFrame
 from rich import box
 from rich.console import Console
@@ -28,12 +28,17 @@ def give_dataframe(
         Table: A Pandas DataFrame.
 
     """
-    season_end = season_end[2:]
+    path = Path.cwd() / "data" / league / f"{season_start}_{season_end}.txt"
     try:
-        with open(f"data/{league}-{season_start}-{season_end}.txt") as f:
+        with open(path) as f:
             lines = f.readlines()
     except FileNotFoundError as e:
-        print("File does not exist bellend", e)
+        console.print(
+            """[bold magenta3]File does not exist bellend[/bold magenta3]\n\
+[bold green]Try get command first[/bold green]""",
+            e,
+        )
+        raise SystemExit(1) from e
 
     table = [lines[x : x + 10] for x in range(0, len(lines), 10)]
     table = [[i.strip() for i in j] for j in table]
