@@ -186,7 +186,9 @@ class Head2HeadPage(Screen):
             with Vertical(classes="base_stats") as wong:
                 wong.border_title = "Teams"
 
-                # yield Pretty(get_team_names())
+                yield Pretty(
+                    "Maybe add filters here for season if main screen just chooses league"
+                )
         yield Button("Take me Back", id="back")
         yield Footer()
 
@@ -214,6 +216,17 @@ class Head2HeadPage(Screen):
             self.h2h_stats.update(more_deets(str(self.team1), str(self.team2)))
 
 
+class QuitScreen(Screen):
+    def compose(self) -> ComposeResult:
+        yield Button("Quit", variant="error", id="quit")
+        yield Button("Cancel", variant="primary", id="cancel")
+
+    def on_button_pressed(self, event:Button.Pressed) -> None:
+        if event.button.id == "quit":
+            self.dismiss(True)
+        else:
+            self.dismiss(False)
+
 class HomeScreen(Screen):
     """."""
 
@@ -227,6 +240,7 @@ class HomeScreen(Screen):
         yield Button("Standings", id="standings")
         yield Button("Stats", id="stats")
         yield Button("H2H", id="h2h")
+        yield Button("Quit", id="quit")
         yield Footer()
 
     def on_button_pressed(self, event: Button.Pressed):
@@ -236,6 +250,8 @@ class HomeScreen(Screen):
         elif event.button.id == "stats":
             self.dismiss(True)
         elif event.button.id == "h2h":
+            self.dismiss(True)
+        elif event.button.id == "quit":
             self.dismiss(True)
 
 
@@ -248,7 +264,8 @@ class FootballAppV2(App):
         ("f", "push_screen('standings')", "Standings"),
         ("s", "push_screen('stats')", "Stats"),
         ("h", "push_screen('head2head')", "Head 2 Head"),
-    ]
+        ("q", "request_quit", "Quit")
+        ]
 
     def __init__(self, df, path, start, end, all_time):
         """Initialise df with data."""
@@ -265,6 +282,7 @@ class FootballAppV2(App):
         yield Button("Standings", id="standings")
         yield Button("Stats", id="stats")
         yield Button("H2H", id="h2h")
+        yield Button("Quit", id="quit")
         yield HomeScreen()
         yield Footer()
 
@@ -289,6 +307,12 @@ class FootballAppV2(App):
         elif event.button.id == "h2h":
             self.push_screen(Head2HeadPage())
 
+    def action_request_quit(self) -> None:
+        def check_quit(quit: bool | None) -> None:
+            if quit:
+                self.exit()
+
+        self.push_screen(QuitScreen(), check_quit)
 
 class FootballApp(App):
     """Run the app."""

@@ -139,3 +139,27 @@ def enrich_table(
     table.title = f"{league} {season_start}-{season_end}"
 
     console.print(table)
+
+
+def enrich_tablev2(
+    datatable: DataFrame,
+) -> Table:
+    """Add rich customization to the table.
+
+    Args:
+        datatable: The dataframe to be converted.
+        league: league.
+        season_start: Year season started.
+        season_end: Year season ended.
+
+    """
+    # rich table version
+    # Initiate a Table instance to be modified
+    table = Table(show_header=False, header_style="bold magenta")
+
+    # Modify the table instance to have the data from the DataFrame
+    table = df_to_table(datatable, table)
+
+    table.box = box.DOUBLE_EDGE
+
+    return table

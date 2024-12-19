@@ -7,7 +7,7 @@ from pandas import DataFrame, concat
 from rich.console import Console
 from rich.table import Table
 
-from .format_tables import df_to_table, give_dataframe
+from .format_tables import df_to_table, give_dataframe, enrich_tablev2
 
 console = Console()
 
@@ -133,13 +133,17 @@ def more_deets(team1: str, team2: str):
     df1["Home_score"] = pd.to_numeric(df1["Home_score"])
     df_sum = df1.groupby("Home")["Home_score"].sum().reset_index()
 
+    df_sum = df_sum.T
+    df_sum.insert(1, "newcol", ["Team", "Goals"])
+
+    # df_sum = df_sum.to_string(header=False)
     if team1 is None or team2 is None:
         return ""
     else:
-        return df_to_table(df_sum, table)
+        return enrich_tablev2(df_sum)
 
 
 def get_team_names():
     """."""
     data = DataFrame(pd.read_csv("data/Premier_League/2019_2020_results.csv"))
-    return set(data["Home"])
+    return sorted(set(data["Home"]))
