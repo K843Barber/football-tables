@@ -1,5 +1,6 @@
-from typing import Optional  # noqa: D100
-from pathlib import Path
+from pathlib import Path  # noqa: D100
+from typing import Optional
+
 from pandas import DataFrame
 from rich import box
 from rich.console import Console
@@ -155,7 +156,7 @@ def enrich_tablev2(
     """
     # rich table version
     # Initiate a Table instance to be modified
-    table = Table(show_header=False, header_style="bold magenta")
+    table = Table(show_header=False)
 
     # Modify the table instance to have the data from the DataFrame
     table = df_to_table(datatable, table)

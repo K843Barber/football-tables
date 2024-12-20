@@ -1,19 +1,13 @@
 import argparse  # noqa: D100
-from json import load
 
 from rich import print
 
 from football.__init__ import __version__
-from football.football_app import FootballApp, FootballAppV2, run_on_server
-from football.format_tables import enrich_table
 from football.get_table import get_game_results, get_table
-from football.show_table import (
-    all_time_table,
-    convert_data_to_df,
-    give_dataframe,
-    show_added_seasons,
-    show_all_time_table,
-)
+from football.show_table import show_added_seasons, show_all_time_table, show_table
+from football.tui.football_app import run_on_server
+from football.tui.interactive import interactive as intermilan
+from football.tui.somebody_test_me import read_files, MainApp
 
 # with open(".config/configuration.json") as f:
 #     choices = tuple(load(f)["league"])
@@ -56,6 +50,13 @@ tinternet = subparsers.add_parser("internet_me", help="Show table in browser")
 tinternet.add_argument("league", help="Which league seasons you currently have")
 tinternet.add_argument("season", nargs=2, help="From which season")
 
+berk = subparsers.add_parser("berk")
+berk.add_argument("league")
+berk.add_argument("season")
+main_me = subparsers.add_parser("main_me")
+main_me.add_argument("league")
+main_me.add_argument("season")
+
 
 def main():
     """."""
@@ -74,27 +75,21 @@ def main():
         if args.command == "get":
             get_table(league, season_start, season_end)
         elif args.command == "show":
-            df = give_dataframe(league, season_start, season_end)
-            enrich_table(df, league, season_start, season_end)
+            show_table(league, season_start, season_end)
         elif args.command == "interactive":
-            ss, se, ll = season_start, season_end, league
-            if int(season_end) - int(season_start) == 1:
-                df = convert_data_to_df(ll, ss, se)
-                FootballAppV2(df, ll, ss, se, False).run()
-            else:
-                df = all_time_table(ll, [str(i) for i in range(int(ss), int(se), 1)])
-                FootballAppV2(df, ll, ss, se, True).run()
-
+            intermilan(league, season_start, season_end)
         elif args.command == "show_seasons":
             show_added_seasons(league)
         elif args.command == "get_game":
             get_game_results(league, season_start, season_end)
         elif args.command == "internet_me":
             run_on_server(league, season_start, season_end)
+        elif args.command == "show_all":
+            show_all_time_table(league, season_start, season_end)
+        elif args.command == "berk":
+            read_files()
         else:
-            show_all_time_table(
-                league, [str(i) for i in range(int(season_start), int(season_end), 1)]
-            )
+            MainApp().run()
 
 
 if __name__ == "__main__":

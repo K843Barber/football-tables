@@ -4,9 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "football"
-version = "1.0.0"
 description = "Footingtons!"
-# dynamic = ["version"]
+dynamic = ["version"]
 dependencies = [
     "argcomplete",
     "argparse",
@@ -28,7 +27,8 @@ dependencies = [
 football = "football.__main__:main"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+include = ["football", "football*"]
 namespaces = false
 
 [tool.setuptools_scm]

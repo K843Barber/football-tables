@@ -4,76 +4,9 @@ from pathlib import Path
 import pandas as pd
 from numpy import reshape
 from pandas import DataFrame, concat
-from rich.console import Console
 from rich.table import Table
 
-from .format_tables import df_to_table, give_dataframe, enrich_tablev2
-
-console = Console()
-
-
-def all_time_table(league: str, seasons: list):
-    """Give DataFrame with all seasons."""
-    cols = ["Pos", "Team", "Pld", "W", "D", "L", "GF", "GA", "GD", "Pts"]
-    all_time_table = DataFrame(columns=cols)
-
-    dfs = []
-    for season in seasons:
-        df = give_dataframe(league, f"{season}", f"{int(season) + 1}")
-
-        df["Team"] = df["Team"].str.replace(r"\(.*\)", "", regex=True)
-        df["Pts"] = df["Pts"].str.replace(r"\[.*\]", "", regex=True)
-        df["Team"] = df["Team"].str.rstrip(" ")
-
-        dfs.append(df)
-
-    all_time_table = DataFrame(concat(dfs))
-
-    columns = ["Pos", "Pts", "Pld", "W", "D", "L", "GF", "GA"]
-    all_time_table[columns] = all_time_table[columns].astype(int)
-
-    def _me_rule():
-        return lambda row: sum(map(int, re.findall(r"(\d+|-\d+)", row)))
-
-    all_time_table["GD"] = all_time_table["GD"].apply(_me_rule())
-
-    new = all_time_table.groupby(by="Team", as_index=False).sum()
-    df = DataFrame(new).sort_values("Pts", ascending=False).reset_index(drop=True)
-    df.index = df.index + 1
-
-    return df
-
-
-def show_all_time_table(league: str, seasons: list):
-    """Show all time table."""
-    league_table = all_time_table(league, seasons)
-    table = Table(title=league, header_style="bold magenta")
-    console.print(df_to_table(league_table, table))
-
-
-def convert_data_to_df(league: str, season_start: str, season_end: str):
-    """Convert txt data to dataframe."""
-    path = Path.cwd() / "data" / league / f"{season_start}_{season_end}.txt"
-    data = list(path.read_text().splitlines())
-    data = reshape(data, (int(len(data) / 10), 10))  # type: ignore
-    data = DataFrame(
-        data, columns=["Team", "Pos", "Pld", "W", "D", "L", "GF", "GA", "GD", "Pts"]
-    )
-
-    return DataFrame(data)
-
-
-def show_added_seasons(league: str):
-    """Lazy way to show what we have in data."""
-    print("showing seasons: ")
-    files = list(Path(f"data/{league}").glob("*.txt"))
-    seasons = []
-    for file in files:
-        if league in str(file):
-            seasons.append(file)
-
-    for s in sorted(seasons):
-        console.print(f"[bold cyan]{s}")
+from football.format_tables import df_to_table, enrich_tablev2, give_dataframe
 
 
 def read_results(team: str, league: str, season_start: str, season_end: str):
@@ -113,7 +46,7 @@ def more_deets(team1: str, team2: str):
     # data2 = DataFrame(pd.read_csv("data/Premier_League_2024_2025_results.csv"))
     # data = pd.concat([data, data1, data2])
 
-    table = Table(show_header=True, header_style="bold magenta")
+    # table = Table(show_header=True, header_style="bold magenta")
     data = data[
         (
             ((data["Home"] == team1) & (data["Away"] == team2))
@@ -121,7 +54,7 @@ def more_deets(team1: str, team2: str):
         )
     ]
 
-    data["home_score"] = data["Result"].str.split("–")
+    data["home_score"] = data["Result"].str.split("–")  # noqa: RUF001
     df = data["home_score"].apply(pd.Series)
     df.columns = ["Home_score", "Away_score"]
     df1 = data.assign(**df)
@@ -136,7 +69,6 @@ def more_deets(team1: str, team2: str):
     df_sum = df_sum.T
     df_sum.insert(1, "newcol", ["Team", "Goals"])
 
-    # df_sum = df_sum.to_string(header=False)
     if team1 is None or team2 is None:
         return ""
     else:
@@ -147,3 +79,47 @@ def get_team_names():
     """."""
     data = DataFrame(pd.read_csv("data/Premier_League/2019_2020_results.csv"))
     return sorted(set(data["Home"]))
+
+
+def all_time_table(league: str, seasons: list):
+    """Give DataFrame with all seasons."""
+    cols = ["Pos", "Team", "Pld", "W", "D", "L", "GF", "GA", "GD", "Pts"]
+    all_time_table = DataFrame(columns=cols)
+
+    dfs = []
+    for season in seasons:
+        df = give_dataframe(league, f"{season}", f"{int(season) + 1}")
+
+        df["Team"] = df["Team"].str.replace(r"\(.*\)", "", regex=True)
+        df["Pts"] = df["Pts"].str.replace(r"\[.*\]", "", regex=True)
+        df["Team"] = df["Team"].str.rstrip(" ")
+
+        dfs.append(df)
+
+    all_time_table = DataFrame(concat(dfs))
+
+    columns = ["Pos", "Pts", "Pld", "W", "D", "L", "GF", "GA"]
+    all_time_table[columns] = all_time_table[columns].astype(int)
+
+    def _me_rule():
+        return lambda row: sum(map(int, re.findall(r"(\d+|-\d+)", row)))
+
+    all_time_table["GD"] = all_time_table["GD"].apply(_me_rule())
+
+    new = all_time_table.groupby(by="Team", as_index=False).sum()
+    df = DataFrame(new).sort_values("Pts", ascending=False).reset_index(drop=True)
+    df.index = df.index + 1
+
+    return df
+
+
+def convert_data_to_df(league: str, season_start: str, season_end: str):
+    """Convert txt data to dataframe."""
+    path = Path.cwd() / "data" / league / f"{season_start}_{season_end}.txt"
+    data = list(path.read_text().splitlines())
+    data = reshape(data, (int(len(data) / 10), 10))  # type: ignore
+    data = DataFrame(
+        data, columns=["Team", "Pos", "Pld", "W", "D", "L", "GF", "GA", "GD", "Pts"]
+    )
+
+    return DataFrame(data)
