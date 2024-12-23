@@ -15,5 +15,5 @@ Includes
 
 ## TODO
 
-    - Update options for season
-    - Create a super table that would include all tables collected
+    - Add functionality to new format to be able to get all time table and H2H
+    - Figure out tagging

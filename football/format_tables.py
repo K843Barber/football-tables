@@ -164,3 +164,24 @@ def enrich_tablev2(
     table.box = box.DOUBLE_EDGE
 
     return table
+
+
+def enrich_tablev3(
+    datatable: DataFrame,
+) -> Table:
+    """Add rich customization to the table.
+
+    Args:
+        datatable: The dataframe to be converted.
+        league: league.
+        season_start: Year season started.
+        season_end: Year season ended.
+
+    """
+    table = Table(show_header=False)
+    table = df_to_table(datatable, table)
+
+    table.box = box.DOUBLE_EDGE
+    table.row_styles = ["purple" for _ in table.rows]
+    table.title = "Seasonal Statistics"
+    return table
