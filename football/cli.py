@@ -1,13 +1,9 @@
 import argparse  # noqa: D100
 
-
-from football.__init__ import __version__
 from football.get_table import get_game_results, get_table
 from football.helper_functions import run_on_server
 from football.show_table import show_added_seasons, show_all_time_table, show_table
-
 from football.tui.interactive import interactive as intermilan
-
 
 main_parser = argparse.ArgumentParser()
 subparsers = main_parser.add_subparsers(dest="command")
@@ -44,12 +40,9 @@ get_game.add_argument("season", nargs=2, help="From which season")
 tinternet = subparsers.add_parser("internet_me", help="Show table in browser")
 
 
-
-
 def main():
     """."""
     args = main_parser.parse_args()
-
 
     if args.command == "get":
         get_table(args.league, args.season[0], args.season[1])

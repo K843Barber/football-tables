@@ -5,3 +5,5 @@ football.egg-info/
 football/__pycache__/
 !football/.gitkeep
 football/tui/__pycache__/
+football/tui/widgets/__pycache__/
+football/tests/__pycache__/

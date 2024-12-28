@@ -1,4 +1,4 @@
-from json import dump
+from json import dump  # noqa: D100
 
 from inquirer import Checkbox, prompt
 

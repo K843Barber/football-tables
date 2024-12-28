@@ -1,5 +1,6 @@
-from pandas import DataFrame
+from pandas import DataFrame  # noqa: D100
 from textual.widgets import DataTable
+
 
 class FootballDataTable(DataTable):
     """Format football df."""

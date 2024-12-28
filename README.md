@@ -10,10 +10,17 @@ Only tested in `src/football/`, but in here, run something like: `football get -
 
 ## Features
 
-Includes
-    - autocompletion from `argcomplete` for the top 5 leagues
+Includes - autocompletion from `argcomplete` for the top 5 leagues
 
 ## TODO
 
-    - Add functionality to new format to be able to get all time table and H2H
-    - Figure out tagging
+- Tables and stats
+  - add goal against distribution
+  - reformat page
+  - add clean sheets, seasonal stats
+- H2H
+  - add emblems
+  - back button in header or footer to fit into single page
+  - Add clean sheets
+- Seasonal stats table
+  - Something including goals, clean sheets, top scorers (golden boot)

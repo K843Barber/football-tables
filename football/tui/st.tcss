@@ -33,6 +33,10 @@ QuitScreen {
 }
 #grid_box {
     border: solid magenta;
+    width: 50%;
+    height: 1fr;
+    padding: 0 10;
+
 }
 #season_select {
     border: solid blue;
@@ -51,16 +55,36 @@ QuitScreen {
 }
 .h2h_container {
     border: solid round magenta;
-    height: 20;
+    height: 15;
     width: auto;
 }
 .statistics_container {
     width: 1fr;
-    height: auto;
+    height: 15;
     border: solid round cyan;
 }
 .results_container {
     width: 50;
     height: 20;
     border: solid round green;
+}
+#text {
+    width: 50%;
+    border: solid round cyan;
+}
+#seasonal_stats {
+    border: solid round aqua;
+    width: 1fr;
+}
+#goal_dist {
+    border: solid round green;
+    width: 1fr;
+}
+.babygotback {
+    width: 1fr;
+    content-align: center middle;
+    border: solid magenta;
+}
+.base_stats {
+    border: solid aqua;
 }
