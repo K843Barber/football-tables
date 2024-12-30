@@ -1,11 +1,15 @@
+# ---------------------- General Screen ----------------------
 Grid {
     align: center middle;
 }
+# ---------------------- Football Data Screen ----------------------
 FootballDataTable {
     border: solid round orange;
     height:auto;
     width: auto;
 }
+# ---------------------- Quit Screen ----------------------
+
 QuitScreen {
     align: center middle;
 }
@@ -31,6 +35,7 @@ QuitScreen {
     border: thick $background 80%;
     background: $surface;
 }
+# ---------------------- Main Screen ----------------------
 #grid_box {
     border: solid magenta;
     width: 50%;
@@ -38,6 +43,8 @@ QuitScreen {
     padding: 0 10;
 
 }
+# ---------------------- Unsorted ----------------------
+
 #season_select {
     border: solid blue;
     width: 20;
@@ -80,6 +87,10 @@ QuitScreen {
     border: solid round green;
     width: 1fr;
 }
+#goal_against {
+    border: solid round red;
+    width: 1fr;
+}
 .babygotback {
     width: 1fr;
     content-align: center middle;
@@ -88,3 +99,40 @@ QuitScreen {
 .base_stats {
     border: solid aqua;
 }
+
+# ---------------------- Content Screen ----------------------
+#what_we_got {
+    height: 100%;
+    margin: 6 40;
+    background: $panel;
+    color: $text;
+    border: tall $background;
+    padding: 1 2;
+}
+#Tables {
+    background: orange;
+    width: 100%;
+}
+.Tables {
+    content-align: center middle;
+}
+
+.H2HINIT {
+    background: mediumpurple;
+    width: 100%;
+    content-align: center middle;
+}
+#back {
+    background: blue;
+    width: 100%;
+}
+
+/* The button class */
+Button {
+    width: 1fr;
+}
+#all_time_willies {
+    height: 1fr;
+    border: solid magenta;
+}
+# ---------------- test ------------------

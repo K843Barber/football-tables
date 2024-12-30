@@ -5,6 +5,7 @@ from textual.widgets import Button, Footer, Header, Pretty
 
 from football.helper_functions import read_files
 from football.tui.widgets.screens import (
+    AllTime,
     ContentScreen,
     H2HScreen,
     QuitScreen,
@@ -49,7 +50,7 @@ class FootballApp(App):
 
     def on_button_pressed(self, event: Button.Pressed):
         """."""
-        if event.button.id not in ("back", "quit", "no", "Tables", "h2h"):
+        if event.button.id not in ("back", "quit", "no", "Tables", "h2h", "allatida"):
             self.selected_league = str(event.button.label)
             self.push_screen(ContentScreen())
 
@@ -59,3 +60,5 @@ class FootballApp(App):
             self.push_screen(TableScreen(self.selected_league))
         if event.button.id == "h2h":
             self.push_screen(H2HScreen(self.selected_league))
+        if event.button.id == "allatida":
+            self.push_screen(AllTime(self.selected_league))

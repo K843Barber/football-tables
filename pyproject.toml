@@ -19,6 +19,7 @@ dependencies = [
     "pre-commit",
     "textual",
     "textual_serve",
+    "rich_pixels",
 ]
 
 # requires-python = ">=3.8"

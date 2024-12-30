@@ -139,7 +139,7 @@ def enrich_table(
     table.box = box.DOUBLE_EDGE
     table.title = f"{league} {season_start}-{season_end}"
 
-    console.print(table)
+    console.print(table, justify="center")
 
 
 def enrich_tablev2(

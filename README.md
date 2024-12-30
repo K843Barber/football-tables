@@ -24,3 +24,6 @@ Includes - autocompletion from `argcomplete` for the top 5 leagues
   - Add clean sheets
 - Seasonal stats table
   - Something including goals, clean sheets, top scorers (golden boot)
+- Tidy up
+  - helper_functions (combine them since alot do similar stuff)
+  - format_tables (might need to take stuff from show_table)

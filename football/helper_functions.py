@@ -29,6 +29,7 @@ def read_results(team: str, league: str, season_start: str, season_end: str) -> 
     return df_to_table(data, table)
 
 
+# H2H Results
 def h2h_datatable(team1: str, team2: str, league: str) -> str | Table:
     """Collect results between two teams."""
     path = Path.cwd() / "data" / league
@@ -39,13 +40,14 @@ def h2h_datatable(team1: str, team2: str, league: str) -> str | Table:
 
     data = pd.concat(total_df)
 
-    table = Table(show_header=False, header_style="bold magenta")
+    table = Table(show_header=False)
     data = data[
         (
             ((data["Home"] == team1) & (data["Away"] == team2))
             | ((data["Home"] == team2) & (data["Away"] == team1))
         )
     ]
+
     if team1 is None or team2 is None:
         return ""
     else:
@@ -69,11 +71,28 @@ def more_deets(team1: str, team2: str, league: str) -> str | Table:
     ]
 
     data["home_score"] = data["Result"].str.split("–")  # noqa: RUF001
-
     df = data["home_score"].apply(pd.Series)
     df.columns = ["Home_score", "Away_score"]
     df1 = data.assign(**df)
     df1 = df1.drop(columns=["Result", "home_score"])
+    clean_sheets: dict = {}
+
+    for _, row in df1.iterrows():
+        if int(row["Home_score"]) == 0:
+            if row["Away"] in clean_sheets:
+                clean_sheets[row["Away"]] += 1
+            else:
+                clean_sheets[row["Away"]] = 1
+        if int(row["Away_score"]) == 0:
+            if row["Home"] in clean_sheets:
+                clean_sheets[row["Home"]] += 1
+            else:
+                clean_sheets[row["Home"]] = 1
+
+    if team1 not in clean_sheets:
+        clean_sheets[team1] = 0
+    if team2 not in clean_sheets:
+        clean_sheets[team2] = 0
 
     if team1 is None or team2 is None or df1.empty:
         return ""
@@ -82,12 +101,22 @@ def more_deets(team1: str, team2: str, league: str) -> str | Table:
         dfa = DataFrame(df1[["Away", "Away_score"]])
         dfa.columns = ["Home", "Home_score"]
         df1 = DataFrame(pd.concat([dfh, dfa]))
-        df1["Home_score"] = pd.to_numeric(df1["Home_score"])
-        df_sum = df1.groupby("Home")["Home_score"].sum().reset_index()
+        df1["team_score"] = pd.to_numeric(df1["Home_score"])
+        df_sum = df1.groupby("Home")["team_score"].sum().reset_index()
 
         df_sum = df_sum.T
+        df_sum.columns = ["h", "a"]
+
         df_sum.insert(1, "newcol", ["Team", "Goals"])
-        return enrich_tablev2(df_sum)
+        cs = DataFrame(clean_sheets.items()).T
+
+        cs = cs[cs.iloc[0].sort_values(ascending=True).index]
+        cs.columns = ["h", "a"]
+
+        cs.insert(1, "newcol", ["Team", "Clean Sheets"])
+        stats = pd.concat([df_sum, cs.tail(1)])
+
+        return enrich_tablev2(stats)
 
 
 def get_team_names(league: str) -> list[Any]:
@@ -197,18 +226,17 @@ def run_on_server() -> None:
 def get_goal_graphic(team: str, league: str, start: str):
     """."""
     path = Path.cwd() / "data" / league / f"{start}_{int(start)+1}_results.csv"
-
-    # paths = path.glob("*results.csv")
-    # ap = list(paths)
-    # filename = [file for file in ap if f"{start}_{int(start)+1}_results.csv"]
-
     a_ath = pd.read_csv(path)
 
     df = DataFrame(a_ath)
+    df["Home"] = df["Home"].str.replace(" ", " ")
+    df["Away"] = df["Away"].str.replace(" ", " ")
     dfh = df[df["Home"] == team]
     dfa = df[df["Away"] == team]
 
     df1 = pd.concat([dfh, dfa])
+
+    df1["Result"] = df1["Result"].str.replace("−", "–")  # noqa: RUF001
     df1["home_score"] = df1["Result"].str.split("–")  # noqa: RUF001
 
     goal_dist: dict = {}
@@ -223,6 +251,41 @@ def get_goal_graphic(team: str, league: str, start: str):
                 goal_dist[row.home_score[1]] += 1
             else:
                 goal_dist[row.home_score[1]] = 1
+
+    d = goal_dist
+    d = dict(sorted(d.items(), key=lambda item: item[0]))
+    keys, value = d.keys(), list(d.values())
+    return str(path), keys, value
+
+
+def get_goal_conceded_graphic(team: str, league: str, start: str):
+    """."""
+    path = Path.cwd() / "data" / league / f"{start}_{int(start)+1}_results.csv"
+
+    a_ath = pd.read_csv(path)
+
+    df = DataFrame(a_ath)
+    df["Home"] = df["Home"].str.replace(" ", " ")
+    df["Away"] = df["Away"].str.replace(" ", " ")
+    dfh = df[df["Home"] == team]
+    dfa = df[df["Away"] == team]
+
+    df1 = pd.concat([dfh, dfa])
+    df1["Result"] = df1["Result"].str.replace("−", "–")  # noqa: RUF001
+    df1["home_score"] = df1["Result"].str.split("–")  # noqa: RUF001
+
+    goal_dist: dict = {}
+    for row in df1.itertuples():
+        if row.Home == team:
+            if row.home_score[1] in goal_dist:
+                goal_dist[row.home_score[1]] += 1
+            else:
+                goal_dist[row.home_score[1]] = 1
+        if row.Away == team:
+            if row.home_score[0] in goal_dist:
+                goal_dist[row.home_score[0]] += 1
+            else:
+                goal_dist[row.home_score[0]] = 1
 
     d = goal_dist
     d = dict(sorted(d.items(), key=lambda item: item[0]))
