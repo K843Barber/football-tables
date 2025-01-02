@@ -3,7 +3,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Grid, Horizontal
 from textual.widgets import Button, Footer, Header, Pretty
 
-from football.helper_functions import read_files
+from football.common.league_page_helper import read_files
 from football.tui.widgets.screens import (
     AllTime,
     ContentScreen,

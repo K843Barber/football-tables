@@ -7,15 +7,14 @@ from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Pretty, RadioSet, Static
 from textual_plotext import PlotextPlot
 
-from football.format_tables import df_to_table
-from football.helper_functions import (
-    all_time_table,
+from football.common.all_time_helper import all_time_table, get_smallest
+from football.common.format_tables import df_to_table
+from football.common.h2h_helper import h2h_datatable, more_deets
+from football.common.helper_functions import get_team_names
+from football.common.league_page_helper import (
     generic_read,
     get_goal_conceded_graphic,
     get_goal_graphic,
-    get_team_names,
-    h2h_datatable,
-    more_deets,
     quick_read,
     read_seasons,
     season_data,
@@ -53,12 +52,12 @@ class TableScreen(Screen):
                 yield Button("Back", id="back", classes="babygotback")
 
         with Horizontal():
-            self.goal_distribution = PlotextPlot(id="goal_dist")
-            self.goal_distribution.border_title = "Goal Distribution"
-            yield self.goal_distribution
-            self.goal_against_distribution = PlotextPlot(id="goal_against")
-            self.goal_against_distribution.border_title = "Goal Against Distribution"
-            yield self.goal_against_distribution
+            self.GFD = PlotextPlot(id="goal_dist")
+            self.GFD.border_title = "Goal Distribution"
+            yield self.GFD
+            self.GAD = PlotextPlot(id="goal_against")
+            self.GAD.border_title = "Goal Against Distribution"
+            yield self.GAD
 
         yield Footer()
 
@@ -101,21 +100,15 @@ class TableScreen(Screen):
     def on_cell_selected(self, event: FootballDataTable.CellHighlighted):
         """."""
         self.selected_team = str(event.value)
-        if "(" in str(self.selected_team):
-            self.selected_team = self.selected_team.split(" (")[0]
-        if self.selected_team == "Paris Saint-Germain":
-            self.selected_team = "Paris SG"
 
         self.Season = self.start
-        if self.selected_team in get_team_names(self.league):
-            if self.Season != "":
+        if self.selected_team in get_team_names(self.league):  # shouldn't need this
+            if self.Season != "":  # Update radioset selection and remove this need
                 self.replot(self.selected_team, self.league, self.Season)
             else:
                 self.replot(self.selected_team, self.league, "2024")
-        self.goal_distribution.border_title = f"Goal Distribution: {self.selected_team}"
-        self.goal_against_distribution.border_title = (
-            f"Goal Against Distribution: {self.selected_team}"
-        )
+        self.GFD.border_title = f"Goal Distribution: {self.selected_team}"
+        self.GAD.border_title = f"Goal Against Distribution: {self.selected_team}"
 
 
 class QuitScreen(Screen):
@@ -256,12 +249,14 @@ class AllTime(Screen):
     def compose(self) -> ComposeResult:
         """."""
         yield Header()
-        with VerticalScroll(id="all_time_willies"):
-            table = Table(title="Willies")
-            seasons = [str(i) for i in range(2018, 2025, 1)]
+        with VerticalScroll(id="all_time_willies") as outer:
+            outer.border_title = "All time table"
+            table = Table()
+            earliest = get_smallest(self.league)
+            seasons = [str(i) for i in range(earliest, 2025, 1)]
             df = all_time_table(self.league, seasons)
             table = df_to_table(df, table)
-            yield Static(table)
+            yield Static(table, id="all_TT")
         yield Button("Back", id="back")
 
     def on_mount(self):

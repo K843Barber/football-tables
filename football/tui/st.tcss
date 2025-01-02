@@ -135,4 +135,7 @@ Button {
     height: 1fr;
     border: solid magenta;
 }
+#all_TT {
+    content-align: center middle;
+}
 # ---------------- test ------------------

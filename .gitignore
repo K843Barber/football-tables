@@ -7,3 +7,4 @@ football/__pycache__/
 football/tui/__pycache__/
 football/tui/widgets/__pycache__/
 football/tests/__pycache__/
+football/common/__pycache__/

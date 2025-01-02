@@ -1,4 +1,5 @@
 from pathlib import Path  # noqa: D100
+from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
@@ -6,7 +7,7 @@ from pandas import DataFrame
 from rich.console import Console
 
 
-def get_table(
+def get_table(  # noqa: C901
     league: str,
     season_start: str,
     season_end: str,
@@ -20,53 +21,76 @@ def get_table(
         season_end: The year the end of the season occurs.
 
     """
-    keyword1 = [
-        "Qualification",
-        "Relegation",
-        "Serie ",
-        "Champions ",
-        "Europa ",
-        "Excluded",
-        "Intertoto",
-        "UEFA",
-    ]
-    if league != "Allsvenskan":
-        url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end[2:]}_{league}"
-    else:
-        url = f"https://en.wikipedia.org/wiki/{season_start}_{league}"
 
-    page = requests.get(url)  # noqa: S113
-    soup = BeautifulSoup(page.text, "html.parser")
-    tabs = soup.find("table", {"class": "wikitable", "style": "text-align:center;"})
-    rows = tabs.find_all("tr")
+    def _grab_leagues():  # noqa: C901
+        """."""
+        keyword1 = [  # Make this better by ignoring this and fixing in the clean
+            "Qualification",
+            "Relegation",
+            "Serie ",
+            "Champions ",
+            "Europa ",
+            "Excluded",
+            "Intertoto",
+            "UEFA",
+            "Banned",
+            "Not admitted",
+            "Qualified",
+            "Invited",
+            "Latin Cup",
+            # "[1]",
+            "Chosen",
+            # "[a]",
+            # "[b]",
+        ]
+        if league != "Allsvenskan":
+            if season_start != "1999":
+                url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end[2:]}_{league}"
+            else:
+                url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end}_{league}"
+        else:
+            url = f"https://en.wikipedia.org/wiki/{season_start}_{league}"
 
-    table = []
+        page = requests.get(url)  # noqa: S113
+        soup = BeautifulSoup(page.text, "html.parser")
+        tabs = soup.find("table", {"class": "wikitable", "style": "text-align:center;"})
+        rows = tabs.find_all("tr")
 
-    for row in rows:
-        for cell in row.find_all("th"):
-            if all(string not in cell.text for string in keyword1):
-                if cell.text.strip() != "":
-                    table.append(cell.text.strip())
+        table = []
 
-        for cell in row.find_all("td"):
-            if all(string not in cell.text for string in keyword1):
-                if cell.text.strip() != "":
-                    table.append(cell.text.strip())
+        for row in rows:
+            for cell in row.find_all("th"):
+                if all(string not in cell.text for string in keyword1):
+                    if cell.text.strip() != "":
+                        table.append(cell.text.strip())
 
-    path = Path.cwd() / "data" / league
-    path.mkdir(parents=True, exist_ok=True)
-    filepath = path / f"{season_start}_{season_end}.txt"
+            for cell in row.find_all("td"):
+                if all(string not in cell.text for string in keyword1):
+                    if cell.text.strip() != "":
+                        table.append(cell.text.strip())
 
-    with filepath.open("w") as f:
-        for i in table[10:]:
-            f.writelines(f"{i}\n")
+        path = Path.cwd() / "data" / league
+        path.mkdir(parents=True, exist_ok=True)
+        filepath = path / f"{season_start}_{season_end}.txt"
+
+        with filepath.open("w") as f:
+            for i in table[10:]:
+                f.writelines(f"{i}\n")
+
+    _grab_leagues()
 
 
 def get_game_results(league: str, season_start: str, season_end: str) -> None:
     """Get league results for all teams."""
 
     def _grab_results():
-        url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end[2:]}_{league}"
+        if league != "Allsvenskan":
+            if season_start != "1999":
+                url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end[2:]}_{league}"
+            else:
+                url = f"https://en.wikipedia.org/wiki/{season_start}%E2%80%93{season_end}_{league}"
+        else:
+            url = f"https://en.wikipedia.org/wiki/{season_start}_{league}"
 
         page = requests.get(url)  # noqa: S113
         soup = BeautifulSoup(page.text, "html.parser")
@@ -102,10 +126,18 @@ def get_game_results(league: str, season_start: str, season_end: str) -> None:
         df = df[df["Result"] != "a"]
         return df
 
-    console = Console()
-
-    with console.status("Processing..."):
-        df = _grab_results()
+    df = _grab_results()
 
     path = Path.cwd() / "data" / league / f"{season_start}_{season_end}_results.csv"
     df.to_csv(path, index=False)
+
+
+def get_alot(league: str, begin: str, end: str):
+    """."""
+    console = Console()
+    with console.status("[cyan]Fetching...[/cyan]"):
+        for num in range(int(begin), int(end) - 1, 1):
+            get_table(league, str(num), str(num + 1))
+            sleep(0.1)
+            get_game_results(league, str(num), str(num + 1))
+            sleep(0.1)

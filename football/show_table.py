@@ -3,8 +3,8 @@ from pathlib import Path  # noqa: D100
 from rich.console import Console
 from rich.table import Table
 
-from football.format_tables import df_to_table, enrich_table, give_dataframe
-from football.helper_functions import all_time_table
+from football.common.all_time_helper import all_time_table
+from football.common.format_tables import df_to_table, enrich_table, give_dataframe
 
 console = Console()
 
@@ -14,7 +14,7 @@ def show_all_time_table(league: str, start: str, end: str):
     seasons = [str(i) for i in range(int(start), int(end), 1)]
     league_table = all_time_table(league, seasons)
     table = Table(title=league, header_style="bold magenta")
-    console.print(df_to_table(league_table, table))
+    console.print(df_to_table(league_table, table), justify="center")
 
 
 def show_added_seasons(league: str):
