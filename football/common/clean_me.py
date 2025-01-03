@@ -4,15 +4,8 @@ from numpy import reshape
 from pandas import DataFrame, read_csv, to_numeric
 from rich.progress import track
 
-# Use file to clean the scraped data
-# Store problems with data here and look to align things and remove from codebase
 
-
-# Issue with querying goals for/against in datatable page. Need to align csv
-# with names in txt files
-# Need to clean the names before using
-
-
+# Re-work to have items as lists and give respected output
 def stripping(strings: str):
     """."""
     if " (" in strings:
@@ -122,7 +115,6 @@ def clean_that(league: str):
                 corrected_file.append(val)
         new_file = DataFrame(reshape(corrected_file, (int(len(corrected_file) / 4), 4)))
         new_file.columns = ["Home", "HS", "AS", "Away"]
-        # print(list(new_file["AS"]))
         new_file["AS"] = to_numeric(new_file["AS"], downcast="integer", errors="coerce")
         new_path = Path.cwd() / "refined_data" / league
         new_path.mkdir(parents=True, exist_ok=True)

@@ -4,14 +4,14 @@ from textual.containers import Grid, Horizontal, Vertical
 from textual.widgets import Button, Footer, Header, Pretty
 
 from football.common.league_page_helper import read_files
-from football.tui.widgets.screens import (  # type: ignore
-    AllTime,
+from football.tui.widgets.screens import (
     ContentScreen,
-    H2HScreen,
     QuitScreen,
     ReadMeScreen,
-    TableScreen,
 )
+from football.tui.widgets.screens_file.all_time_screen import AllTime
+from football.tui.widgets.screens_file.h2h_screen import H2HScreen
+from football.tui.widgets.screens_file.league_screen import TableScreen
 
 console = Console()
 

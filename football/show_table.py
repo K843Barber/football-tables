@@ -17,7 +17,7 @@ def get_season_list(league: str) -> list:
     return [file.stem.split("_")[0] for file in files]
 
 
-def show_all_time_table(league: str):
+def show_all_time_table(league: str) -> None:
     """Show all time table."""
     seasons = get_season_list(league)
     league_table = all_time_table(league, seasons)
@@ -25,7 +25,7 @@ def show_all_time_table(league: str):
     console.print(df_to_table(league_table, table), justify="center")
 
 
-def show_added_seasons(league: str):
+def show_added_seasons(league: str) -> None:
     """Lazy way to show what we have in data."""
     print("showing seasons: ")
     files = list(Path(f"data/{league}").glob("*.txt"))
@@ -38,7 +38,7 @@ def show_added_seasons(league: str):
         console.print(f"[bold cyan]{s}")
 
 
-def show_table(league, season_start, season_end):
+def show_table(league, season_start, season_end) -> None:
     """."""
     df = give_dataframe(league, season_start, season_end)
     enrich_table(df, league, season_start, season_end)
