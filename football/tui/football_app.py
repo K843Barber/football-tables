@@ -1,14 +1,15 @@
 from rich.console import Console  # noqa: D100
 from textual.app import App, ComposeResult
-from textual.containers import Grid, Horizontal
+from textual.containers import Grid, Horizontal, Vertical
 from textual.widgets import Button, Footer, Header, Pretty
 
 from football.common.league_page_helper import read_files
-from football.tui.widgets.screens import (
+from football.tui.widgets.screens import (  # type: ignore
     AllTime,
     ContentScreen,
     H2HScreen,
     QuitScreen,
+    ReadMeScreen,
     TableScreen,
 )
 
@@ -32,14 +33,16 @@ class FootballApp(App):
         leagues = Grid(id="grid_box")
         leagues.border_title = "Select a league"
         with Horizontal():
-            yield Pretty(
-                welcome_text,
-                id="text",
-            )
+            with Vertical():
+                yield Pretty(
+                    welcome_text,
+                    id="text",
+                )
+                yield Button("README", id="readme")
+                yield Button("Quit", id="quit")
             with leagues:
                 for league in read_files():
                     yield Button(league)
-                yield Button("Quit", id="quit")
         yield Footer()
 
     def on_mount(self) -> None:
@@ -50,7 +53,20 @@ class FootballApp(App):
 
     def on_button_pressed(self, event: Button.Pressed):
         """."""
-        if event.button.id not in ("back", "quit", "no", "Tables", "h2h", "allatida"):
+        if event.button.id not in (
+            "back",
+            "quit",
+            "no",
+            "Tables",
+            "h2h",
+            "allatida",
+            "All Time Table",
+            "League Wins",
+            "all_TT",
+            "initbruv",
+            "all_time_willies",
+            "readme",
+        ):
             self.selected_league = str(event.button.label)
             self.push_screen(ContentScreen())
 
@@ -62,3 +78,5 @@ class FootballApp(App):
             self.push_screen(H2HScreen(self.selected_league))
         if event.button.id == "allatida":
             self.push_screen(AllTime(self.selected_league))
+        if event.button.id == "readme":
+            self.push_screen(ReadMeScreen())

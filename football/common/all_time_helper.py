@@ -1,8 +1,10 @@
 import re  # noqa: D100
+from pathlib import Path
 
 from pandas import DataFrame, concat
+from rich.table import Table
 
-from football.common.format_tables import give_dataframe
+from football.common.format_tables import df_to_table, give_dataframe
 from football.common.league_page_helper import read_seasons
 
 
@@ -48,3 +50,30 @@ def all_time_table(league: str, seasons: list) -> DataFrame:
 def get_smallest(league: str):
     """Grab the earliest season for the all time table."""
     return min([int(i.split("_")[0]) for i in read_seasons(league)])
+
+
+def league_winners(league: str):
+    """."""
+    path = Path.cwd() / "refined_data" / league
+    files = path.rglob("*.txt")
+
+    titles: dict = {}
+
+    for file in sorted(files)[:-1]:
+        winner = file.read_text().split("\n")[0]
+        if winner in titles:
+            titles[winner] += 1
+        else:
+            titles[winner] = 1
+
+    titles = dict(sorted(titles.items(), key=lambda item: item[1], reverse=True))
+    titles_df = DataFrame(titles, index=["0"]).T
+    titles_df["Team"] = titles_df.index
+    titles_df.columns = ["Wins", "Team"]
+    titles_df = titles_df[["Team", "Wins"]]
+    table = Table(header_style="bold cyan", border_style="dim cyan")
+
+    return df_to_table(titles_df, table)
+
+
+# league_winners("Premier_League")

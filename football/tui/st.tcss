@@ -131,11 +131,23 @@ QuitScreen {
 Button {
     width: 1fr;
 }
-#all_time_willies {
-    height: 1fr;
-    border: solid magenta;
-}
+# #all_time_willies {
+#     height: 1fr;
+#     border: solid magenta;
+# }
 #all_TT {
     content-align: center middle;
 }
+#initbruv {
+    content-align: center middle;
+}
 # ---------------- test ------------------
+ContentSwitcher {
+    # border: round $primary;
+    width: 100%;
+    height: 8fr;
+}
+.alltimetableframe {
+    height: 1fr;
+    border: solid magenta;
+}

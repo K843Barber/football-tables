@@ -1,13 +1,23 @@
+from matplotlib import table
 from rich.console import Console  # noqa: D100
 from rich.table import Table
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Grid, Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
-from textual.widgets import Button, Footer, Header, Pretty, RadioSet, Static
+from textual.widgets import (
+    Button,
+    ContentSwitcher,
+    Footer,
+    Header,
+    MarkdownViewer,
+    Pretty,
+    RadioSet,
+    Static,
+)
 from textual_plotext import PlotextPlot
 
-from football.common.all_time_helper import all_time_table, get_smallest
+from football.common.all_time_helper import all_time_table, league_winners
 from football.common.format_tables import df_to_table
 from football.common.h2h_helper import h2h_datatable, more_deets
 from football.common.helper_functions import get_team_names
@@ -19,6 +29,8 @@ from football.common.league_page_helper import (
     read_seasons,
     season_data,
 )
+from football.common.readme import MARKDOWN
+from football.show_table import get_season_list
 from football.tui.widgets.the_table import FootballDataTable
 
 console = Console()
@@ -248,20 +260,52 @@ class AllTime(Screen):
 
     def compose(self) -> ComposeResult:
         """."""
-        yield Header()
-        with VerticalScroll(id="all_time_willies") as outer:
-            outer.border_title = "All time table"
-            table = Table()
-            earliest = get_smallest(self.league)
-            seasons = [str(i) for i in range(earliest, 2025, 1)]
-            df = all_time_table(self.league, seasons)
-            table = df_to_table(df, table)
-            yield Static(table, id="all_TT")
+        yield Header(name="Football App - All things football: All Time Screen")
+        with Horizontal():
+            yield Button("All Time Table", id="all_time_willies")
+            yield Button("League Wins", id="initbruv")
+
+        with ContentSwitcher(initial="all_time_willies"):
+            with VerticalScroll(
+                id="all_time_willies", classes="alltimetableframe"
+            ) as outer:
+                outer.border_title = "All time table"
+                table = Table()
+
+                seasons = get_season_list(self.league)
+                df = all_time_table(self.league, seasons)
+                table = df_to_table(df, table)
+                yield Static(table, id="all_TT")
+            league_wins = league_winners(self.league)
+            yield Static(league_wins, id="initbruv")
+
         yield Button("Back", id="back")
 
     def on_mount(self):
         """."""
         self.league_selection = ""
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        """."""
+        if event.button.id == "back":
+            self.dismiss(True)
+        if event.button.id == "all_time_willies":
+            self.query_one(ContentSwitcher).current = event.button.id
+        if event.button.id == "initbruv":
+            self.query_one(ContentSwitcher).current = event.button.id
+
+
+class ReadMeScreen(Screen):
+    """."""
+
+    def __init__(self):
+        """."""
+        super().__init__()
+
+    def compose(self) -> ComposeResult:
+        """."""
+        yield MarkdownViewer(MARKDOWN, show_table_of_contents=True)
+        yield Button("Back", id="back")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """."""

@@ -33,6 +33,14 @@ def stripping(strings: str):
         strings = strings.split("[")[0]
     if "Cup Winners' Cup" in strings:
         strings = ""
+    if "Mitropa" in strings:
+        strings = ""
+    if "Readmitted" in strings:
+        strings = ""
+    if "[1]" in strings:
+        strings = strings.split("[")[0]
+    if "Segunda" in strings:
+        strings = ""
 
     return strings.strip("\n").strip()
 

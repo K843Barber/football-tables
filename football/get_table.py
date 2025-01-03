@@ -4,7 +4,8 @@ from time import sleep
 import requests
 from bs4 import BeautifulSoup
 from pandas import DataFrame
-from rich.console import Console
+from rich.progress import BarColumn, Progress, TextColumn
+from rich.table import Column
 
 
 def get_table(  # noqa: C901
@@ -134,9 +135,15 @@ def get_game_results(league: str, season_start: str, season_end: str) -> None:
 
 def get_alot(league: str, begin: str, end: str):
     """."""
-    console = Console()
-    with console.status("[cyan]Fetching...[/cyan]"):
-        for num in range(int(begin), int(end) - 1, 1):
+    text_column = TextColumn("{task.description}", table_column=Column(ratio=1))
+    bar_column = BarColumn(bar_width=None, table_column=Column(ratio=2))
+    progress = Progress(text_column, bar_column, expand=True)
+
+    with progress:
+        for num in progress.track(
+            range(int(begin), int(end) - 1, 1),
+            description="[bold magenta]Fetching[/bold magenta]",
+        ):
             get_table(league, str(num), str(num + 1))
             sleep(0.1)
             get_game_results(league, str(num), str(num + 1))

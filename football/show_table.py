@@ -9,9 +9,17 @@ from football.common.format_tables import df_to_table, enrich_table, give_datafr
 console = Console()
 
 
-def show_all_time_table(league: str, start: str, end: str):
+def get_season_list(league: str) -> list:
+    """."""
+    path = Path.cwd() / "refined_data" / league
+    files = path.rglob("*.txt")
+
+    return [file.stem.split("_")[0] for file in files]
+
+
+def show_all_time_table(league: str):
     """Show all time table."""
-    seasons = [str(i) for i in range(int(start), int(end), 1)]
+    seasons = get_season_list(league)
     league_table = all_time_table(league, seasons)
     table = Table(title=league, header_style="bold magenta")
     console.print(df_to_table(league_table, table), justify="center")
