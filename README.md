@@ -1,12 +1,34 @@
 # football-tables :soccer:
 
-A way to extract football tables and see them right in your command line!
+See football league statistics in the terminal!
 
-## Usage
+## Setup
 
-Best to create venv with `python3 -m venv .venv` and activate with `source .venv/bin/activate`
-Run `pip install -e .`
-Only tested in `src/football/`, but in here, run something like: `football get --league --Premier_League --season 2023 24`, followed by `football show --league Premier_League --season 2023 24`
+Create venv for cleanliness:
+
+```
+python3 -m venv .venv
+```
+
+Activate it:
+
+```
+. .venv/bin/activate
+```
+
+Get dependencies:
+
+```
+python3 -m pip install -e .
+```
+
+## Get Started
+
+To begin, run the following and go from there:
+
+```
+football
+```
 
 ## Features
 

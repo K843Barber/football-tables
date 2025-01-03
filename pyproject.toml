@@ -20,6 +20,7 @@ dependencies = [
     "textual",
     "textual_serve",
     "rich_pixels",
+    "textual_plotext"
 ]
 
 # requires-python = ">=3.8"
