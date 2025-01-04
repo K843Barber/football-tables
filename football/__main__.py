@@ -1,4 +1,6 @@
-from football.cli import main  # noqa: D100
+"""Main."""
+
+from football.cli import main
 
 if __name__ == "__main__":
     raise SystemExit(main())

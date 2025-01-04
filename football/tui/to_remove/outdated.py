@@ -121,7 +121,6 @@
 #         self.wicked_wango.update(data)
 
 
-
 # class Standings(Screen):
 #     """."""
 
@@ -346,3 +345,5 @@
 # from football.tui.the_table import FootballDataTable
 
 
+# def _me_rule():
+#     return lambda row: sum(map(int, re.findall(r"(\d+|\-\d+)", row)))

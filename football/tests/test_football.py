@@ -1,4 +1,6 @@
-import pytest  # noqa: D100
+"""tests."""
+
+import pytest
 
 from football.tui.football_app import FootballApp
 

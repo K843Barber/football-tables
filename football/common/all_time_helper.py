@@ -1,10 +1,11 @@
-import re  # noqa: D100
+"""Helper functions for all time table."""
+
 from pathlib import Path
 
 from pandas import DataFrame, concat
 from rich.table import Table
 
-from football.common.format_tables import df_to_table, give_dataframe
+from football.common.format_tables import df_to_table, txt_to_df
 from football.common.league_page_helper import read_seasons
 
 
@@ -15,7 +16,7 @@ def all_time_table(league: str, seasons: list) -> DataFrame:
 
     dfs = []
     for season in seasons:
-        df = give_dataframe(league, f"{season}", f"{int(season) + 1}")
+        df = txt_to_df(league, f"{season}", f"{int(season) + 1}")
 
         df["Team"] = df["Team"].str.replace(r"\(.*\)", "", regex=True)
         df["Pts"] = df["Pts"].str.replace(r"\[.*\]", "", regex=True)
@@ -27,16 +28,9 @@ def all_time_table(league: str, seasons: list) -> DataFrame:
     columns = ["Pos", "Pts", "Pld", "W", "D", "L", "GF", "GA"]
     all_time[columns] = all_time[columns].astype(int)
 
-    def _me_rule():
-        return lambda row: sum(map(int, re.findall(r"(\d+|-\d+)", row)))
-
-    # Ugly fixes here
-    all_time["GD"] = all_time["GD"].apply(_me_rule())
-
-    all_time["T1"] = all_time["Team"].str.split("[", expand=False)
-    all_time["T1"] = all_time["T1"].str[0]
-    all_time["Team"] = all_time["T1"]
-    all_time = all_time.drop(columns=["T1"])
+    all_time["GD"] = all_time["GD"].str.replace("+", "")
+    all_time["GD"] = all_time["GD"].str.replace("−", "-")  # noqa: RUF001
+    all_time["GD"] = all_time["GD"].astype(int)
 
     new = all_time.groupby(by="Team", as_index=False).sum()
     df = DataFrame(new).sort_values("Pts", ascending=False).reset_index(drop=True)
@@ -76,4 +70,6 @@ def league_winners(league: str):
     return df_to_table(titles_df, table)
 
 
-# league_winners("Premier_League")
+# # league_winners("Premier_League")
+# seasons = [str(i) for i in range(1992, 2025)]
+# all_time_table("Premier_League", seasons)

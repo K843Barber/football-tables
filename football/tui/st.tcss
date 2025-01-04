@@ -110,8 +110,10 @@ QuitScreen {
     padding: 1 2;
 }
 #Tables {
-    background: orange;
+    background: slategrey;
     width: 100%;
+    color: black;
+    
 }
 .Tables {
     content-align: center middle;
@@ -121,10 +123,16 @@ QuitScreen {
     background: mediumpurple;
     width: 100%;
     content-align: center middle;
+    color: black;
+}
+#allatida {
+    background: orchid;
+    color: black;
 }
 #back {
-    background: blue;
+    background: plum;
     width: 100%;
+    color: black;
 }
 
 /* The button class */

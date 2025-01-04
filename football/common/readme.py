@@ -63,4 +63,4 @@ Includes - autocompletion from `argcomplete` for the top 5 leagues
 |              | Stats         | <input type="checkbox" unchecked> | <input type="checkbox" unchecked> | <input type="checkbox" unchecked> | <input type="checkbox" unchecked> | <input type="checkbox" unchecked> Logo                 | <input type="checkbox" unchecked> |
 | All Time     | New Feature   | <input type="checkbox" unchecked> | <input type="checkbox" unchecked> | <input type="checkbox" unchecked> | <input type="checkbox" unchecked> | <input type="checkbox" unchecked> No. of league titles | <input type="checkbox" unchecked> |
 
-"""  # noqa: D100
+"""  # noqa: D100, E501

@@ -1,4 +1,6 @@
-from pathlib import Path  # noqa: D100
+"""League page helper."""
+
+from pathlib import Path
 
 import pandas as pd
 from pandas import DataFrame

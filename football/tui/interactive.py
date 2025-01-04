@@ -1,4 +1,6 @@
-from football.tui.football_app import FootballApp  # noqa: D100
+"""Run interactive."""
+
+from football.tui.football_app import FootballApp
 
 
 def interactive():

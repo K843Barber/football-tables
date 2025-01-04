@@ -1,4 +1,6 @@
-from pandas import DataFrame  # noqa: D100
+"""Pandas DataFrame to textual DataTable."""
+
+from pandas import DataFrame
 from textual.widgets import DataTable
 
 

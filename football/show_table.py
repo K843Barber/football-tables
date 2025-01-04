@@ -1,28 +1,27 @@
-from pathlib import Path  # noqa: D100
+"""Functions to show league tables."""
+
+from pathlib import Path
 
 from rich.console import Console
-from rich.table import Table
 
 from football.common.all_time_helper import all_time_table
-from football.common.format_tables import df_to_table, enrich_table, give_dataframe
+from football.common.format_tables import (
+    enrich_table,
+    enrich_tablev4,
+    txt_to_df,
+)
+from football.common.harry_styles import league_stylings
+from football.common.helper_functions import get_season_list
 
 console = Console()
-
-
-def get_season_list(league: str) -> list:
-    """."""
-    path = Path.cwd() / "refined_data" / league
-    files = path.rglob("*.txt")
-
-    return [file.stem.split("_")[0] for file in files]
 
 
 def show_all_time_table(league: str) -> None:
     """Show all time table."""
     seasons = get_season_list(league)
     league_table = all_time_table(league, seasons)
-    table = Table(title=league, header_style="bold magenta")
-    console.print(df_to_table(league_table, table), justify="center")
+    title = str(league).replace("_", " ")
+    console.print(enrich_tablev4(league_table, title), justify="center")
 
 
 def show_added_seasons(league: str) -> None:
@@ -39,6 +38,8 @@ def show_added_seasons(league: str) -> None:
 
 
 def show_table(league, season_start, season_end) -> None:
-    """."""
-    df = give_dataframe(league, season_start, season_end)
-    enrich_table(df, league, season_start, season_end)
+    """Show individual league table."""
+    df = txt_to_df(league, season_start, season_end)
+    styles = league_stylings[league][str(len(df))]
+    title = str(league).replace("_", " ")
+    enrich_table(df, title, season_start, season_end, styles)

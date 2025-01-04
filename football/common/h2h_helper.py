@@ -1,10 +1,12 @@
-from pathlib import Path  # noqa: D100
+"""Head 2 Head helper."""
+
+from pathlib import Path
 
 import pandas as pd
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from rich.table import Table
 
-from football.common.format_tables import df_to_table, enrich_tablev2
+from football.common.format_tables import enrich_tablev2, enrich_tablev4
 
 
 def results_df(team1: str, team2: str, league: str):
@@ -31,12 +33,10 @@ def h2h_datatable(team1: str, team2: str, league: str) -> str | Table:
     """Collect results between two teams."""
     data, team1, team2 = results_df(team1, team2, league)
 
-    table = Table(show_header=False)
-
     if team1 is None or team2 is None:
         return ""
     else:
-        return df_to_table(data, table)
+        return enrich_tablev2(data)
 
 
 def more_deets(team1: str, team2: str, league: str) -> str | Table:
@@ -86,3 +86,50 @@ def more_deets(team1: str, team2: str, league: str) -> str | Table:
 
 
 # more_deets("AC Milan", "Internazionale", "Serie_A")
+
+
+def win_lose_draw(team1: str, team2: str, league: str):
+    """."""
+    data, team1, team2 = results_df(team1, team2, league)
+
+    wld: dict = {team1: 0, "Draw": 0, team2: 0}
+
+    for _, row in data.iterrows():
+        if int(row["HS"]) > int(row["AS"]):
+            wld[row["Home"]] += 1
+        elif int(row["AS"]) > int(row["HS"]):
+            wld[row["Away"]] += 1
+        else:
+            wld["Draw"] += 1
+
+    if team1 is None or team2 is None or data.empty:
+        return ""
+    else:
+        df = DataFrame(wld, index=["0"])
+        print(df)
+
+        return enrich_tablev4(df)
+
+
+# win_lose_draw("Arsenal", "Aston Villa", "Premier_League")
+def biggest_win(team1: str, team2: str, league: str):
+    """."""
+    data, team1, team2 = results_df(team1, team2, league)
+
+    biggest = 0
+    win: Series = ""
+    for _, row in data.iterrows():
+        if abs(row["HS"] - row["AS"]) > biggest:
+            biggest = abs(row["HS"] - row["AS"])
+            win = row
+
+    if type(win) is not str:
+        return enrich_tablev4(DataFrame(win).T)
+    else:
+        return ""
+
+
+# from rich.console import Console
+
+# console = Console()
+# console.print(biggest_win("Arsenal", "Brighton & Hove Albion", "Premier_League"))

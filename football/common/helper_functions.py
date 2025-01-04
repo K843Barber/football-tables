@@ -1,4 +1,6 @@
-from __future__ import annotations  # noqa: D100
+"""Helper functions."""
+
+from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
@@ -44,4 +46,12 @@ def run_on_server() -> None:
     server.serve()
 
 
-# print(get_team_names("Serie_A"))
+def get_season_list(league: str) -> list:
+    """."""
+    path = Path.cwd() / "refined_data" / league
+    files = path.rglob("*.txt")
+
+    return [file.stem.split("_")[0] for file in files]
+
+
+# print(get_team_names("La_Liga"))

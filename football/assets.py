@@ -1,13 +1,13 @@
-from rich.console import Console  # noqa: D100
+"""Page to provide module details."""
+
+from rich.text import Text
 
 import football
 
-console = Console()
-
-small_logo = console.print(rf"""
+small_logo = rf"""
     -   \O                                     ,  .-.___
   -     /\                                   O/  /xx\XXX\
  -   __/\ `                                  /\  |xx|XXX|
     `    \, ()                              ` << |xx|XXX|
 ^^^^^^^^^^^`^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[bold cyan]Football version: {football.__version__}[/bold cyan]""")  # type: ignore
+Football version: {Text(football.__version__, style="magenta")}"""  # type: ignore

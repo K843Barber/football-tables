@@ -1,4 +1,6 @@
-from rich.console import Console  # noqa: D100
+"""App main page."""
+
+from rich.console import Console
 from textual.app import App, ComposeResult
 from textual.containers import Grid, Horizontal, Vertical
 from textual.widgets import Button, Footer, Header, Pretty

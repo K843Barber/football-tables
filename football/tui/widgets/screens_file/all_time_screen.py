@@ -1,4 +1,6 @@
-from rich.table import Table  # noqa: D100
+"""All time table screen."""
+
+from rich.table import Table
 from textual.app import ComposeResult
 from textual.containers import Horizontal, VerticalScroll
 from textual.screen import Screen
@@ -29,7 +31,7 @@ class AllTime(Screen):
                 id="all_time_willies", classes="alltimetableframe"
             ) as outer:
                 outer.border_title = "All time table"
-                table = Table()
+                table = Table(header_style="bold magenta", border_style="dim magenta")
 
                 seasons = get_season_list(self.league)
                 df = all_time_table(self.league, seasons)

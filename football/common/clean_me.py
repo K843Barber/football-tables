@@ -1,73 +1,117 @@
-from pathlib import Path  # noqa: D100
+"""Functions to clean the data."""
+
+from pathlib import Path
 
 from numpy import reshape
 from pandas import DataFrame, read_csv, to_numeric
 from rich.progress import track
 
 
-# Re-work to have items as lists and give respected output
 def stripping(strings: str):
     """."""
+    skip_type1 = [
+        "[b]",
+        "[a]",
+        "[c]",
+        "[d]",
+        "[e]",
+        "[g]",
+        "[f]",
+        "[1]",
+        "[h]",
+        "[i]",
+        "[j]",
+    ]
+    skip_type2 = [
+        "Cup Winners' Cup",
+        "Mitropa",
+        "Segunda",
+        "Qualification",
+        "Relegation",
+        "Serie ",
+        "Champions ",
+        "Europa ",
+        "Excluded",
+        "Intertoto",
+        "UEFA",
+        "Banned",
+        "Not admitted",
+        "Qualified",
+        "Invited",
+        "Latin Cup",
+        "Chosen",
+    ]
     if " (" in strings:
         strings = strings.split(" (")[0]
-    if "[b]" in strings:
-        strings = strings.split("[")[0]
-    if "[a]" in strings:
-        strings = strings.split("[")[0]
-    if "[c]" in strings:
-        strings = strings.split("[")[0]
-    if "[d]" in strings:
-        strings = strings.split("[")[0]
-    if "[e]" in strings:
-        strings = strings.split("[")[0]
-    if "[g]" in strings:
-        strings = strings.split("[")[0]
-    if "[f]" in strings:
-        strings = strings.split("[")[0]
-    if "Cup Winners' Cup" in strings:
-        strings = ""
-    if "Mitropa" in strings:
-        strings = ""
-    if "Readmitted" in strings:
-        strings = ""
-    if "[1]" in strings:
-        strings = strings.split("[")[0]
-    if "Segunda" in strings:
-        strings = ""
+    for ext in skip_type1:
+        if ext in strings:
+            strings = strings.split("[")[0]
 
-    return strings.strip("\n").strip()
+    for ext in skip_type2:
+        if ext in strings:
+            strings = ""
+
+    return strings.strip("\n").strip().replace("\xa0", " ")
 
 
 def correct_names(strings: str):
     """."""
-    if strings == "Milan":
-        strings = "AC Milan"
-    elif strings == "Inter Milan":
-        strings = "Internazionale"
-    elif strings == "Inter":
-        strings = "Internazionale"
-    elif strings == "ChievoVerona":
-        strings = "Chievo"
-    elif strings == "Paris SG":
-        strings = "Paris Saint-Germain"
-    # corrected1[corrected1["Team"] == "Deportivo de La Coruña"] = "Deportivo La Coruña"
-    # corrected1[corrected1["Team"] == "FC Barcelona"] = "Barcelona"
-    # corrected1[corrected1["Team"] == "Valencia CF"] = "Valencia"
-    # corrected1[corrected1["Team"] == "CD Tenerife"] = "CD Tenerife"
-    # corrected1[corrected1["Team"] == "Hércules CF"] = "Hércules"
-    # corrected1[corrected1["Team"] == "Racing de Santander"] = "Racing Santander"
-    # corrected1[corrected1["Team"] == "Celta de Vigo"] = "Celta Vigo"
-    # corrected1[corrected1["Team"] == "CD Tenerife"] = "Tenerife"
-    # corrected1[corrected1["Team"] == "Sevilla FC"] = "Sevilla"
-    # corrected1[corrected1["Team"] == "UD Salamanca"] = "Salamanca"
-    # corrected1[corrected1["Team"] == "RCD Espanyol"] = "Espanyol"
-    # corrected1[corrected1["Team"] == "SD Compostela"] = "Compostela"
-    # corrected1[corrected1["Team"] == "Sporting de Gijón"] = "Sporting Gijón"
-    # corrected1[corrected1["Team"] == "CF Extramadura"] = "Extramadura"
-    # corrected1[corrected1["Team"] == "Sporting de Gijón"] = "Sporting Gijón"
-    # corrected1[corrected1["Team"] == "CP Mérida"] = "Mérida"
-    # corrected1[corrected1["Team"] == "CD Logroñés"] = "Logroñés"
-    return strings
+    fixit: dict = {
+        "Milan": "AC Milan",
+        "Inter Milan": "Internazionale",
+        "Inter": "Internazionale",
+        "ChievoVerona": "Chievo",
+        "Paris SG": "Paris Saint-Germain",
+        "Deportivo de La Coruña": "Deportivo La Coruña",
+        "FC Barcelona": "Barcelona",
+        "CF Barcelona": "Barcelona",
+        "Valencia CF": "Valencia",
+        "Hércules CF": "Hércules",
+        "Racing de Santander": "Racing Santander",
+        "Celta de Vigo": "Celta Vigo",
+        "CD Tenerife": "Tenerife",
+        "Sevilla FC": "Sevilla",
+        "UD Salamanca": "Salamanca",
+        "RCD Espanyol": "Espanyol",
+        "SD Compostela": "Compostela",
+        "Sporting de Gijón": "Sporting Gijón",
+        "CF Extramadura": "Extramadura",
+        "CP Mérida": "Mérida",
+        "CD Logroñés": "Logroñés",
+        "AD Almería": "Almería",
+        "Alavés": "Deportivo Alavés",
+        "Albacete Balompié": "Albacete",
+        "Atlético Bilbao": "Athletic Bilbao",
+        "Betis": "Real Betis",
+        "CD Castellón": "Castellón",
+        "CD Málaga": "Málaga",
+        "CE Sabadell FC": "Sabadell",
+        "CF Extremadura": "Extremadura",
+        "Celta": "Celta Vigo",
+        "Cádiz CF": "Cádiz",
+        "Córdoba CF": "Córdoba",
+        "Elche CF": "Elche",
+        "Granada CF": "Granada",
+        "La Coruña": "Deportivo La Coruña",
+        "Pontevedra CF": "Pontevedra",
+        "RCD Español": "Español",
+        "RCD Mallorca": "Mallorca",
+        "Recreativo": "Recreativo de Huelva",
+        "Sevilla CF": "Sevilla",
+        "UD Las Palmas": "Las Palmas",
+    }
+    if strings in fixit:
+        return fixit[strings]
+    else:
+        return strings
+
+
+def fix_gd(problem_list: list) -> list:
+    """."""
+    for i in range(8, len(problem_list), 10):
+        problem_list[i] = int(problem_list[i - 2]) - int(problem_list[i - 1])
+
+    return problem_list
 
 
 def clean_it(league: str):
@@ -75,7 +119,7 @@ def clean_it(league: str):
     path = Path.cwd() / "data" / league
     files = path.rglob("*.txt")
 
-    for file in files:
+    for file in sorted(files):
         rewritten_file = []
         with open(file) as f:
             lines = f.readlines()
@@ -84,7 +128,9 @@ def clean_it(league: str):
                 lll = correct_names(ll)
                 if lll != "":
                     rewritten_file.append(lll)
+        rewritten_file = fix_gd(rewritten_file)
         new_path = Path.cwd() / "refined_data" / league
+
         new_path.mkdir(parents=True, exist_ok=True)
         filepath = new_path / file.name
 
@@ -93,33 +139,49 @@ def clean_it(league: str):
                 f.writelines(f"{item}\n")
 
 
+def fix_dataframe(file: Path) -> DataFrame:
+    """."""
+    tmp_df = DataFrame(read_csv(file))
+    tmp_df["Home"] = tmp_df["Home"].str.replace(" ", " ")  # noqa: RUF001
+    tmp_df["Away"] = tmp_df["Away"].str.replace(" ", " ")  # noqa: RUF001
+    tmp_df["Home"] = tmp_df["Home"].str.replace("\xa0", " ")
+    tmp_df["Away"] = tmp_df["Away"].str.replace("\xa0", " ")
+
+    tmp_df["Result"] = tmp_df["Result"].str.replace("−", "–")  # noqa: RUF001
+    tmp_df[["HS", "AS"]] = tmp_df["Result"].str.split("–", expand=True)  # noqa: RUF001
+    tmp_df = tmp_df.drop(["Result"], axis=1)
+    tmp_df = tmp_df[["Home", "HS", "AS", "Away"]]
+    return tmp_df
+
+
 def clean_that(league: str):
     """."""
     path = Path.cwd() / "data" / league
     files = path.rglob("*results.csv")
-    for file in track(files, description="Converting..."):
-        tmp_df = DataFrame(read_csv(file))
-        # print(list(tmp_df["Result"]))
-        tmp_df["Home"] = tmp_df["Home"].str.replace(" ", " ")  # noqa: RUF001
-        tmp_df["Away"] = tmp_df["Away"].str.replace(" ", " ")  # noqa: RUF001
-        tmp_df["Result"] = tmp_df["Result"].str.replace("−", "–")  # noqa: RUF001
-        tmp_df[["HS", "AS"]] = tmp_df["Result"].str.split("–", expand=True)  # noqa: RUF001
-        tmp_df = tmp_df.drop(["Result"], axis=1)
-        tmp_df = tmp_df[["Home", "HS", "AS", "Away"]]
+    for file in track(files, description="[bold green]Cleaning...[/bold green]"):
+        tmp_df = fix_dataframe(file)
 
         corrected_file = []
+        holder = file.stem.split("_r")[0].split("_")[0]
+
         for row in tmp_df.values:
-            for cell in row:
-                val = stripping(cell)
-                val = correct_names(val)
-                corrected_file.append(val)
+            if holder == "1979" and "CD Málaga" in row and "UD Salamanca" in row:
+                for cell in ["CD Málaga", "0", "3", "UD Salamanca"]:
+                    corrected_file.append(cell)
+            else:
+                for cell in row:
+                    val = stripping(cell)
+                    val = correct_names(val)
+                    corrected_file.append(val)
         new_file = DataFrame(reshape(corrected_file, (int(len(corrected_file) / 4), 4)))
         new_file.columns = ["Home", "HS", "AS", "Away"]
-        new_file["AS"] = to_numeric(new_file["AS"], downcast="integer", errors="coerce")
+
+        new_file["AS"] = to_numeric(new_file["AS"])
         new_path = Path.cwd() / "refined_data" / league
         new_path.mkdir(parents=True, exist_ok=True)
         filepath = new_path / file.name
         new_file.to_csv(filepath, sep=",", index=False)
 
 
-# clean_that("Serie_A")
+# clean_that("La_Liga")
+# clean_it("Bundesliga")

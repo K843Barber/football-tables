@@ -1,4 +1,6 @@
-from textual import on  # noqa: D100
+"""League Table screen."""
+
+from textual import on
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen

@@ -1,4 +1,6 @@
-from rich.console import Console  # noqa: D100
+"""Some of the screens."""
+
+from rich.console import Console
 from textual.app import ComposeResult
 from textual.containers import Grid
 from textual.screen import Screen
