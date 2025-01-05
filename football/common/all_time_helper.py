@@ -41,12 +41,12 @@ def all_time_table(league: str, seasons: list) -> DataFrame:
     return df
 
 
-def get_smallest(league: str):
+def get_smallest(league: str) -> int:
     """Grab the earliest season for the all time table."""
     return min([int(i.split("_")[0]) for i in read_seasons(league)])
 
 
-def league_winners(league: str):
+def league_winners(league: str) -> Table:
     """."""
     path = Path.cwd() / "refined_data" / league
     files = path.rglob("*.txt")
@@ -73,3 +73,4 @@ def league_winners(league: str):
 # # league_winners("Premier_League")
 # seasons = [str(i) for i in range(1992, 2025)]
 # all_time_table("Premier_League", seasons)
+# print(type(get_smallest("Premier_League")))

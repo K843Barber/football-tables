@@ -3,11 +3,11 @@
 from pathlib import Path
 
 from numpy import reshape
-from pandas import DataFrame, read_csv, to_numeric
+from pandas import DataFrame, read_csv
 from rich.progress import track
 
 
-def stripping(strings: str):
+def table_stripping(strings: str) -> str:
     """."""
     skip_type1 = [
         "[b]",
@@ -41,17 +41,65 @@ def stripping(strings: str):
         "Latin Cup",
         "Chosen",
     ]
-    if " (" in strings:
-        strings = strings.split(" (")[0]
-    for ext in skip_type1:
-        if ext in strings:
-            strings = strings.split("[")[0]
+    if strings is not None:
+        if " (" in strings:
+            strings = strings.split(" (")[0]
+        for ext in skip_type1:
+            if ext in strings:
+                strings = strings.split("[")[0]
 
-    for ext in skip_type2:
-        if ext in strings:
-            strings = ""
+        for ext in skip_type2:
+            if ext in strings:
+                strings = ""
+        return strings.strip("\n").strip().replace("\xa0", " ")
 
-    return strings.strip("\n").strip().replace("\xa0", " ")
+
+def results_stripping(strings: str) -> str:
+    """."""
+    skip_type1 = [
+        "[b]",
+        "[a]",
+        "[c]",
+        "[d]",
+        "[e]",
+        "[g]",
+        "[f]",
+        "[1]",
+        "[h]",
+        "[i]",
+        "[j]",
+    ]
+    skip_type2 = [
+        "Cup Winners' Cup",
+        "Mitropa",
+        "Segunda",
+        "Qualification",
+        "Relegation",
+        "Serie ",
+        "Champions ",
+        "Europa ",
+        "Excluded",
+        "Intertoto",
+        "UEFA",
+        "Banned",
+        "Not admitted",
+        "Qualified",
+        "Invited",
+        "Latin Cup",
+        "Chosen",
+    ]
+    if strings is not None:
+        strings = strings.strip(")").strip("(")
+        # if " (" in strings:
+        #     strings = strings.split(" (")[0]
+        for ext in skip_type1:
+            if ext in strings:
+                strings = strings.split("[")[0]
+
+        for ext in skip_type2:
+            if ext in strings:
+                strings = ""
+        return strings.strip("\n").strip().replace("\xa0", " ")
 
 
 def correct_names(strings: str):
@@ -124,7 +172,7 @@ def clean_it(league: str):
         with open(file) as f:
             lines = f.readlines()
             for line in lines:
-                ll = stripping(line)
+                ll = table_stripping(line)
                 lll = correct_names(ll)
                 if lll != "":
                     rewritten_file.append(lll)
@@ -170,18 +218,24 @@ def clean_that(league: str):
                     corrected_file.append(cell)
             else:
                 for cell in row:
-                    val = stripping(cell)
+                    val = results_stripping(cell)
                     val = correct_names(val)
-                    corrected_file.append(val)
+                    if val != "":
+                        corrected_file.append(val)
         new_file = DataFrame(reshape(corrected_file, (int(len(corrected_file) / 4), 4)))
         new_file.columns = ["Home", "HS", "AS", "Away"]
 
-        new_file["AS"] = to_numeric(new_file["AS"])
+        for _, row in new_file.iterrows():
+            if "-" in row["HS"]:
+                row.iloc[1], row.iloc[2] = row["HS"].split("-")
+
+        # print(list(new_file["HS"]))
+
         new_path = Path.cwd() / "refined_data" / league
         new_path.mkdir(parents=True, exist_ok=True)
         filepath = new_path / file.name
         new_file.to_csv(filepath, sep=",", index=False)
 
 
-# clean_that("La_Liga")
+# clean_that("Premier_League")
 # clean_it("Bundesliga")

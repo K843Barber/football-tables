@@ -11,7 +11,7 @@ from football.common.helper_functions import convert_data_to_df
 
 def quick_read(league: str) -> DataFrame:
     """Instantiate league table on first view."""
-    ss, se = str(2023), str(2024)
+    ss, se = str(2024), str(2025)
     return convert_data_to_df(league, ss, se)
 
 
@@ -22,7 +22,7 @@ def generic_read(league: str, ss: str, se: str) -> DataFrame:
 
 def read_files() -> list:
     """Collect list of leagues."""
-    path = Path.cwd() / "data"
+    path = Path.cwd() / "refined_data"
     folders = path.glob("*/")
     leagues = [i.name for i in folders]
     return sorted(leagues)
@@ -30,7 +30,7 @@ def read_files() -> list:
 
 def read_seasons(league: str) -> list:
     """Collect list of seasons."""
-    path = Path.cwd() / "data" / league
+    path = Path.cwd() / "refined_data" / league
     files = path.glob("*.txt")
     seasons = [str(i.name).split(".")[0] for i in files]
     return sorted(seasons)

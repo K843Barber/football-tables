@@ -2,7 +2,7 @@
 
 from rich.console import Console
 from textual.app import App, ComposeResult
-from textual.containers import Grid, Horizontal, Vertical
+from textual.containers import Grid, Horizontal
 from textual.widgets import Button, Footer, Header, Pretty
 
 from football.common.league_page_helper import read_files
@@ -34,8 +34,10 @@ class FootballApp(App):
         yield Header()
         leagues = Grid(id="grid_box")
         leagues.border_title = "Select a league"
+        starter = Grid(id="main_left")
+        starter.border_title = "Start Page"
         with Horizontal():
-            with Vertical():
+            with starter:
                 yield Pretty(
                     welcome_text,
                     id="text",

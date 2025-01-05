@@ -134,15 +134,19 @@ QuitScreen {
     width: 100%;
     color: black;
 }
+.main_left {
+    content-align: center middle;
+    width: 50%;
+    height: 1fr;
+    padding: 0 10;
+}
 
 /* The button class */
 Button {
     width: 1fr;
+    content-align: center middle;
 }
-# #all_time_willies {
-#     height: 1fr;
-#     border: solid magenta;
-# }
+
 #all_TT {
     content-align: center middle;
 }
@@ -151,7 +155,6 @@ Button {
 }
 # ---------------- test ------------------
 ContentSwitcher {
-    # border: round $primary;
     width: 100%;
     height: 8fr;
 }

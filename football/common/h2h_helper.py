@@ -9,7 +9,7 @@ from rich.table import Table
 from football.common.format_tables import enrich_tablev2, enrich_tablev4
 
 
-def results_df(team1: str, team2: str, league: str):
+def results_df(team1: str, team2: str, league: str) -> tuple[DataFrame, str, str]:
     """."""
     path = Path.cwd() / "refined_data" / league
     paths = path.glob("*results.csv")
@@ -88,7 +88,7 @@ def more_deets(team1: str, team2: str, league: str) -> str | Table:
 # more_deets("AC Milan", "Internazionale", "Serie_A")
 
 
-def win_lose_draw(team1: str, team2: str, league: str):
+def win_lose_draw(team1: str, team2: str, league: str) -> Table | str:
     """."""
     data, team1, team2 = results_df(team1, team2, league)
 
@@ -106,13 +106,12 @@ def win_lose_draw(team1: str, team2: str, league: str):
         return ""
     else:
         df = DataFrame(wld, index=["0"])
-        print(df)
 
         return enrich_tablev4(df)
 
 
 # win_lose_draw("Arsenal", "Aston Villa", "Premier_League")
-def biggest_win(team1: str, team2: str, league: str):
+def biggest_win(team1: str, team2: str, league: str) -> Table | str:
     """."""
     data, team1, team2 = results_df(team1, team2, league)
 
