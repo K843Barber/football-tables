@@ -1,6 +1,5 @@
 """Convert dataframe to rich table."""
 
-from pathlib import Path
 from typing import Optional
 
 from pandas import DataFrame
@@ -9,53 +8,6 @@ from rich.console import Console
 from rich.table import Table
 
 console = Console()
-
-
-def txt_to_df(
-    league: str,
-    start: str,
-    end: str,
-) -> DataFrame:
-    """Convert a standardized txt file into a DataFrame.
-
-    Args:
-    ----
-        league (league): A string given from command line to insert into file to read.
-        start (start): A string given from command line to insert into file
-          to read.
-        end (end): A string given from command line to insert into file
-        to read.
-
-    Returns:
-    -------
-        Table: A Pandas DataFrame.
-
-    """
-    path = Path.cwd() / "refined_data" / league / f"{start}_{end}.txt"
-    try:
-        with open(path) as f:
-            lines = f.readlines()
-    except FileNotFoundError as e:
-        console.print(
-            """[bold magenta3]File does not exist bellend[/bold magenta3]\n\
-[bold green]Try get command first[/bold green]""",
-            e,
-        )
-        raise SystemExit(1) from e
-
-    table = [lines[x : x + 10] for x in range(0, len(lines), 10)]
-    table = [[i.strip() for i in j] for j in table]
-
-    table1 = []
-    for i in table:
-        tmp = i[1]
-        i[1] = i[0]
-        i[0] = tmp
-        table1.append(i)
-
-    cols = ["Pos", "Team", "Pld", "W", "D", "L", "GF", "GA", "GD", "Pts"]
-
-    return DataFrame(table1, columns=cols)
 
 
 def df_to_table(

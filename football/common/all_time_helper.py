@@ -5,7 +5,8 @@ from pathlib import Path
 from pandas import DataFrame, concat
 from rich.table import Table
 
-from football.common.format_tables import df_to_table, txt_to_df
+from football.common.format_tables import df_to_table
+from football.common.helper_functions import convert_data_to_df
 from football.common.league_page_helper import read_seasons
 
 
@@ -16,26 +17,17 @@ def all_time_table(league: str, seasons: list) -> DataFrame:
 
     dfs = []
     for season in seasons:
-        df = txt_to_df(league, f"{season}", f"{int(season) + 1}")
-
-        df["Team"] = df["Team"].str.replace(r"\(.*\)", "", regex=True)
-        df["Pts"] = df["Pts"].str.replace(r"\[.*\]", "", regex=True)
-        df["Team"] = df["Team"].str.rstrip(" ")
-
+        df = convert_data_to_df(league, f"{season}", f"{int(season) + 1}")
         dfs.append(df)
 
     all_time = DataFrame(concat(dfs))
     columns = ["Pos", "Pts", "Pld", "W", "D", "L", "GF", "GA"]
     all_time[columns] = all_time[columns].astype(int)
-
-    all_time["GD"] = all_time["GD"].str.replace("+", "")
-    all_time["GD"] = all_time["GD"].str.replace("−", "-")  # noqa: RUF001
     all_time["GD"] = all_time["GD"].astype(int)
 
     new = all_time.groupby(by="Team", as_index=False).sum()
     df = DataFrame(new).sort_values("Pts", ascending=False).reset_index(drop=True)
-    df.index = df.index + 1
-    df["Pos"] = df.index
+    df["Pos"] = df.index + 1
     df[["Team", "Pos"]] = df[["Pos", "Team"]]
 
     return df
@@ -74,3 +66,8 @@ def league_winners(league: str) -> Table:
 # seasons = [str(i) for i in range(1992, 2025)]
 # all_time_table("Premier_League", seasons)
 # print(type(get_smallest("Premier_League")))
+
+
+# df["Team"] = df["Team"].str.replace(r"\(.*\)", "", regex=True)
+# df["Pts"] = df["Pts"].str.replace(r"\[.*\]", "", regex=True)
+# df["Team"] = df["Team"].str.rstrip(" ")

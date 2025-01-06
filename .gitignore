@@ -9,3 +9,5 @@ football/tui/widgets/__pycache__/
 football/tests/__pycache__/
 football/common/__pycache__/
 football/tui/widgets/screens_file/__pycache__/
+.coverage
+.logs

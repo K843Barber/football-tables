@@ -11,8 +11,7 @@ from football.common.helper_functions import convert_data_to_df
 
 def quick_read(league: str) -> DataFrame:
     """Instantiate league table on first view."""
-    ss, se = str(2024), str(2025)
-    return convert_data_to_df(league, ss, se)
+    return convert_data_to_df(league, str(2024), str(2025))
 
 
 def generic_read(league: str, ss: str, se: str) -> DataFrame:

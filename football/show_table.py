@@ -5,13 +5,9 @@ from pathlib import Path
 from rich.console import Console
 
 from football.common.all_time_helper import all_time_table
-from football.common.format_tables import (
-    enrich_table,
-    enrich_tablev4,
-    txt_to_df,
-)
+from football.common.format_tables import enrich_table, enrich_tablev4
 from football.common.harry_styles import league_stylings
-from football.common.helper_functions import get_season_list
+from football.common.helper_functions import convert_data_to_df, get_season_list
 
 console = Console()
 
@@ -39,7 +35,7 @@ def show_added_seasons(league: str) -> None:
 
 def show_table(league, season_start, season_end) -> None:
     """Show individual league table."""
-    df = txt_to_df(league, season_start, season_end)
+    df = convert_data_to_df(league, season_start, season_end)
     styles = league_stylings[league][str(len(df))]
     title = str(league).replace("_", " ")
     enrich_table(df, title, season_start, season_end, styles)

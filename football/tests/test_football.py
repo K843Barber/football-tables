@@ -26,6 +26,19 @@ async def test_buttons():
         logger.log(level=1, msg="Go to README screen")
         await pilot.click("#readme")
         assert app.screen.name is None
+        await pilot.click("#back")
+        assert app.screen.name is None
+
+
+@pytest.mark.asyncio
+@pytest.mark.skip
+async def test_other_buttons():
+    """."""
+    logger.log(level=1, msg="Initialise app")
+    app = FootballApp()
+    async with app.run_test() as pilot:
+        await pilot.click("#Tables")
+        assert app.screen.name is None
 
 
 # class TestSmallest(unittest.TestCase):

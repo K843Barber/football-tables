@@ -22,9 +22,9 @@ def get_team_names(league: str) -> list[Any]:
     return sorted(set(total_df["Home"]))  # type: ignore
 
 
-def convert_data_to_df(league: str, season_start: str, season_end: str) -> DataFrame:
+def convert_data_to_df(league: str, start: str, end: str) -> DataFrame:
     """Convert txt data to dataframe."""
-    path = Path.cwd() / "refined_data" / league / f"{season_start}_{season_end}.txt"
+    path = Path.cwd() / "refined_data" / league / f"{start}_{end}.txt"
     data = list(path.read_text().splitlines())
     x, y = int(len(data) / 10), 10
     data = reshape(data, shape=(x, y))  # type: ignore
