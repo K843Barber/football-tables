@@ -90,8 +90,6 @@ def results_stripping(strings: str) -> str:
     ]
     if strings is not None:
         strings = strings.strip(")").strip("(")
-        # if " (" in strings:
-        #     strings = strings.split(" (")[0]
         for ext in skip_type1:
             if ext in strings:
                 strings = strings.split("[")[0]
@@ -228,8 +226,6 @@ def clean_that(league: str):
         for _, row in new_file.iterrows():
             if "-" in row["HS"]:
                 row.iloc[1], row.iloc[2] = row["HS"].split("-")
-
-        # print(list(new_file["HS"]))
 
         new_path = Path.cwd() / "refined_data" / league
         new_path.mkdir(parents=True, exist_ok=True)
