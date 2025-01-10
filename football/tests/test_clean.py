@@ -27,7 +27,7 @@ def test_table_stripping():
 
 
 @pytest.mark.parametrize(
-    "strings, expected",
+    ("strings", "expected"),
     [
         ("Paris Saint-Germain (C)", "Paris Saint-Germain"),
         ("Lazi(o (CP)", "Lazi(o"),
@@ -40,7 +40,7 @@ def test_strip_parentheses(strings: str, expected: str):
 
 
 @pytest.mark.parametrize(
-    "strings, expected",
+    ("strings", "expected"),
     [
         ("Qualified (Q)", ""),
         ("Invited (dd)", ""),
@@ -53,7 +53,7 @@ def test_strip_results(strings: str, expected: str):
 
 
 @pytest.mark.parametrize(
-    "strings, expected",
+    ("strings", "expected"),
     [
         ("Inter Milan", "Internazionale"),
         ("Celta de Vigo", "Celta Vigo"),

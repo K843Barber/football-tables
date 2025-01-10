@@ -19,7 +19,7 @@ def generic_read(league: str, ss: str, se: str) -> DataFrame:
     return convert_data_to_df(league, ss, se)
 
 
-def read_files() -> list:
+def read_folders() -> list:
     """Collect list of leagues."""
     path = Path.cwd() / "refined_data"
     folders = path.glob("*/")

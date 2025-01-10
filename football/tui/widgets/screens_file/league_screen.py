@@ -34,6 +34,7 @@ class TableScreen(Screen):
             footy_table = FootballDataTable()
             footy_table.border_title = self.league
             yield footy_table
+
             with VerticalScroll(id="season_select") as outer:
                 season_select = RadioSet(*read_seasons(str(self.league)))
                 outer.border_title = "Select Season"
@@ -56,10 +57,11 @@ class TableScreen(Screen):
 
         yield Footer()
 
-    def on_mount(self) -> None:
+    async def on_mount(self) -> None:
         """."""
         self.table = self.query_one(FootballDataTable)
         self.table.add_df(quick_read(str(self.league)))
+
         self.selected_team = ""
         self.Season = ""
         self.start = ""

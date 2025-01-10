@@ -5,7 +5,8 @@ from textual.app import App, ComposeResult
 from textual.containers import Grid, Horizontal
 from textual.widgets import Button, Footer, Header, Pretty
 
-from football.common.league_page_helper import read_files
+from football.assets import other_logo
+from football.common.league_page_helper import read_folders
 from football.tui.widgets.screens import (
     ContentScreen,
     QuitScreen,
@@ -38,14 +39,11 @@ class FootballApp(App):
         starter.border_title = "Start Page"
         with Horizontal():
             with starter:
-                yield Pretty(
-                    welcome_text,
-                    id="text",
-                )
+                yield Pretty(other_logo, id="text")
                 yield Button("README", id="readme")
                 yield Button("Quit", id="quit")
             with leagues:
-                for league in read_files():
+                for league in read_folders():
                     yield Button(league)
         yield Footer()
 

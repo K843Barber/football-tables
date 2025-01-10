@@ -76,8 +76,8 @@ QuitScreen {
     border: solid round green;
 }
 #text {
-    width: 50%;
-    border: solid round cyan;
+    width: 100%;
+    # border: solid round cyan;
 }
 #seasonal_stats {
     border: solid round aqua;
@@ -134,11 +134,12 @@ QuitScreen {
     width: 100%;
     color: black;
 }
-.main_left {
+#main_left {
     content-align: center middle;
     width: 50%;
     height: 1fr;
     padding: 0 10;
+    border: solid magenta;
 }
 
 /* The button class */
