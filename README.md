@@ -46,8 +46,6 @@ Includes - autocompletion from `argcomplete` for the top 5 leagues
 - Tidy up
   - helper_functions (combine them since alot do similar stuff)
   - format_tables (might need to take stuff from show_table)
-  - Need to correct data before querying it really.
-    - Although the list is nice in H2H, the queried stats are wrong, at least for la liga and serie a. PL seems to in line with data online. Unsure of Bundesliga, Ligue 1 yet, or Allsvenskan
 
 ## Status
 
