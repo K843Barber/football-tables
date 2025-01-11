@@ -53,6 +53,7 @@ class ContentScreen(Screen):
         yield Grid(
             Button("Tables and Stats", id="Tables"),
             Button("Head 2 Head", id="h2h", classes="H2HINIT"),
+            Button("Individual Team", id="invidual_team"),
             Button("All Time", id="allatida"),
             Button("back", id="back"),
             id="what_we_got",

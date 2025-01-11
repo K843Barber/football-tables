@@ -50,4 +50,43 @@ def get_season_list(league: str) -> list:
     return [file.stem.split("_")[0] for file in files]
 
 
-# print(get_team_names("La_Liga"))
+def convert_data_to_df_mini(league: str, start: str) -> DataFrame:
+    """Convert txt data to dataframe."""
+    path = Path.cwd() / "refined_data" / league / f"{start}_{int(start)+1}.txt"
+    data = list(path.read_text().splitlines())
+    x, y = int(len(data) / 10), 10
+    data = reshape(data, shape=(x, y))  # type: ignore
+    cols = ["Pos", "Team", "Pld", "W", "D", "L", "GF", "GA", "GD", "Pts"]
+    data = DataFrame(data, columns=cols)
+
+    data[["Team", "Pos"]] = data[["Pos", "Team"]]  # type: ignore
+    league_table = data
+
+    return league_table
+
+
+def query_with_all(data_frame, query_string):
+    """Nifty little requester thing."""
+    if query_string == "all":
+        return data_frame
+    return data_frame.loc[data_frame["Team"] == query_string]
+
+
+def team_news(team: str, league: str, stat: str):
+    """Get team info."""
+    path = Path.cwd() / "refined_data" / league
+    files = path.glob("*.txt")
+    years = [file.stem.split("_")[0] for file in files]
+
+    df = DataFrame()
+
+    years = list(map(int, years))  # type: ignore
+    for year in sorted(years):
+        df = concat([df, query_with_all(convert_data_to_df_mini(league, year), team)])
+    df["year"] = sorted(years)
+
+    goals = list(map(int, df[stat]))
+    return list(df["year"]), goals
+
+
+team_news("Liverpool", "Premier_League", "Pos")

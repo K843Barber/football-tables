@@ -14,6 +14,7 @@ from football.tui.widgets.screens import (
 )
 from football.tui.widgets.screens_file.all_time_screen import AllTime
 from football.tui.widgets.screens_file.h2h_screen import H2HScreen
+from football.tui.widgets.screens_file.individual_club import IndividualTeamScreen
 from football.tui.widgets.screens_file.league_screen import TableScreen
 
 console = Console()
@@ -68,6 +69,7 @@ class FootballApp(App):
             "initbruv",
             "all_time_willies",
             "readme",
+            "invidual_team",
         ):
             self.selected_league = str(event.button.label)
             self.push_screen(ContentScreen())
@@ -82,3 +84,5 @@ class FootballApp(App):
             self.push_screen(AllTime(self.selected_league))
         if event.button.id == "readme":
             self.push_screen(ReadMeScreen())
+        if event.button.id == "invidual_team":
+            self.push_screen(IndividualTeamScreen())
