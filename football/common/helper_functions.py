@@ -52,7 +52,7 @@ def get_season_list(league: str) -> list:
 
 def convert_data_to_df_mini(league: str, start: str) -> DataFrame:
     """Convert txt data to dataframe."""
-    path = Path.cwd() / "refined_data" / league / f"{start}_{int(start)+1}.txt"
+    path = Path.cwd() / "refined_data" / league / f"{start}_{int(start) + 1}.txt"
     data = list(path.read_text().splitlines())
     x, y = int(len(data) / 10), 10
     data = reshape(data, shape=(x, y))  # type: ignore
@@ -82,11 +82,17 @@ def team_news(team: str, league: str, stat: str):
 
     years = list(map(int, years))  # type: ignore
     for year in sorted(years):
-        df = concat([df, query_with_all(convert_data_to_df_mini(league, year), team)])
+        df_to_add = query_with_all(convert_data_to_df_mini(league, year), team)
+        if df_to_add.empty:
+            df_to_add = DataFrame(0, index=[0], columns=df_to_add.columns)
+            df_to_add["Team"] = team
+            df_to_add["Pos"] = 20
+
+        df = concat([df, df_to_add])
     df["year"] = sorted(years)
 
-    goals = list(map(int, df[stat]))
-    return list(df["year"]), goals
+    item2 = list(map(int, df[stat]))  # type: ignore
+    return df["year"], item2
 
 
-team_news("Liverpool", "Premier_League", "Pos")
+# print(team_news("Aston Villa", "Premier_League", "GF"))

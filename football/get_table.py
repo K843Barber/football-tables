@@ -37,7 +37,10 @@ def get_table(league: str, start: str, end: str) -> None:
 
     page = requests.get(url, timeout=10)
     soup = BeautifulSoup(page.text, "html.parser")
-    tabs = soup.find("table", {"class": "wikitable", "style": "text-align:center;"})
+    try:
+        tabs = soup.find("table", {"class": "wikitable", "style": "text-align:center;"})
+    except TypeError:
+        return None
 
     table: list = []
 

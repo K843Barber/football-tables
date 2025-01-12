@@ -7,15 +7,17 @@ from textual.widgets import Button, Footer, Header, Pretty
 
 from football.assets import other_logo
 from football.common.league_page_helper import read_folders
-from football.tui.widgets.screens import (
+from football.tui.widgets.screens_file.all_time_screen import AllTime
+from football.tui.widgets.screens_file.h2h_screen import H2HScreen
+from football.tui.widgets.screens_file.individual_club import ClubScreen
+
+# IndividualTeamScreen,
+from football.tui.widgets.screens_file.league_screen import TableScreen
+from football.tui.widgets.screens_file.screens import (
     ContentScreen,
     QuitScreen,
     ReadMeScreen,
 )
-from football.tui.widgets.screens_file.all_time_screen import AllTime
-from football.tui.widgets.screens_file.h2h_screen import H2HScreen
-from football.tui.widgets.screens_file.individual_club import IndividualTeamScreen
-from football.tui.widgets.screens_file.league_screen import TableScreen
 
 console = Console()
 
@@ -85,4 +87,4 @@ class FootballApp(App):
         if event.button.id == "readme":
             self.push_screen(ReadMeScreen())
         if event.button.id == "invidual_team":
-            self.push_screen(IndividualTeamScreen())
+            self.push_screen(ClubScreen(self.selected_league))

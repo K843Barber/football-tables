@@ -40,6 +40,7 @@ def table_stripping(strings: str) -> str:
         "Invited",
         "Latin Cup",
         "Chosen",
+        "Readmitted",
     ]
     if strings is not None:
         if " (" in strings:
@@ -87,6 +88,7 @@ def results_stripping(strings: str) -> str:
         "Invited",
         "Latin Cup",
         "Chosen",
+        "Readmitted",
     ]
     if strings is not None:
         strings = strings.strip(")").strip("(")

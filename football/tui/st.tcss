@@ -103,11 +103,11 @@ QuitScreen {
 # ---------------------- Content Screen ----------------------
 #what_we_got {
     height: 100%;
-    margin: 6 40;
+    margin: 3 40;
     background: $panel;
     color: $text;
     border: tall $background;
-    padding: 1 2;
+    padding: 1 1;
 }
 #Tables {
     background: slategrey;
@@ -139,7 +139,7 @@ QuitScreen {
     width: 50%;
     height: 1fr;
     padding: 0 10;
-    border: solid magenta;
+    border: solid cyan;
 }
 
 /* The button class */
@@ -154,6 +154,29 @@ Button {
 #initbruv {
     content-align: center middle;
 }
+# ---------------- club page ------------------
+# #club_select {
+#     height: 0.5fr;
+# }
+#ClubPage {
+    border: solid green;
+}
+#GF {
+    border: solid round cyan;
+    height: 20;
+}
+# #GA {
+#     border: solid round cyan;
+#     height: 10;
+# }
+# #club_stats {
+#     border: solid orange;
+# }
+#league_pos {
+    border: solid round green;
+    width: 1fr;
+    height: 10;
+}
 # ---------------- test ------------------
 ContentSwitcher {
     width: 100%;
@@ -163,3 +186,4 @@ ContentSwitcher {
     height: 1fr;
     border: solid magenta;
 }
+

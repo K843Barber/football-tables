@@ -39,10 +39,22 @@ def season_data(league: str, ss: str, se: str) -> DataFrame:
     """Collect and show league data in fancy format."""
     df = convert_data_to_df(league, ss, se)
     goal_data = pd.to_numeric(df["GF"])
-    total_games = len(goal_data) * len(goal_data) - 1
+    g1 = int(sum(pd.to_numeric(df["Pld"])) / 2)
+
+    total_games = g1
+
+    path = Path.cwd() / "refined_data" / league / f"{ss}_{se}_results.csv"
+    df_results = DataFrame(pd.read_csv(path))
+
+    home = df_results.loc[df_results["HS"] == 0].shape[0]
+    away = df_results.loc[df_results["AS"] == 0].shape[0]
 
     new_df = DataFrame(
-        {"Goals": sum(goal_data), "Goals per game": f"{sum(goal_data)/total_games:.2f}"},
+        {
+            "Goals": sum(goal_data),
+            "Goals per game": f"{sum(goal_data) / total_games:.2f}",
+            "Clean Sheets": home + away,
+        },
         index=["0"],
     ).T.reset_index()
 
@@ -99,17 +111,11 @@ def get_goal_conceded_graphic(team: str, league: str, start: str):
 
 def score_df(team: str, league: str, start: str):
     """."""
-    path = Path.cwd() / "refined_data" / league / f"{start}_{int(start)+1}_results.csv"
-
+    path = Path.cwd() / "refined_data" / league / f"{start}_{int(start) + 1}_results.csv"
     df = DataFrame(pd.read_csv(path))
 
     dfh = df[df["Home"] == team]
     dfa = df[df["Away"] == team]
 
     df1 = pd.concat([dfh, dfa])
-
     return df1, path
-
-
-# get_goal_graphic("Paris Saint-Germain", "Ligue_1", "2024")
-# get_goal_conceded_graphic("Celta Vigo", "La_Liga", "2004")
