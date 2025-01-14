@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from numpy import reshape
-from pandas import DataFrame, concat, read_csv
+from pandas import DataFrame, Series, concat, read_csv, to_numeric
 from textual_serve.server import Server
 
 
@@ -72,7 +72,7 @@ def query_with_all(data_frame, query_string):
     return data_frame.loc[data_frame["Team"] == query_string]
 
 
-def team_news(team: str, league: str, stat: str):
+def team_news(team: str, league: str, stat: str) -> tuple[Series, list[int]]:
     """Get team info."""
     path = Path.cwd() / "refined_data" / league
     files = path.glob("*.txt")
@@ -95,4 +95,75 @@ def team_news(team: str, league: str, stat: str):
     return df["year"], item2
 
 
-# print(team_news("Aston Villa", "Premier_League", "GF"))
+def try_convert_to_int(value):
+    """."""
+    try:
+        val = float(value)
+        if val.is_integer():
+            return int(val)
+        else:
+            return val
+    except ValueError:
+        return value
+
+
+def convert_to_int_or_float(value):
+    try:
+        # Try to convert to float first
+        val = float(value)
+        # If the value is equivalent to an integer, return it as int
+        if val.is_integer():
+            return int(val)
+        else:
+            return val  # Leave it as float
+    except ValueError:
+        return value  # Return as is if conversion fails (e.g., non-numeric)
+
+
+def general_stats(team: str, league: str):
+    """Get team info."""
+    path = Path.cwd() / "refined_data" / league
+    files = path.glob("*.txt")
+    years = [file.stem.split("_")[0] for file in files]
+
+    df = DataFrame()
+
+    years = list(map(int, years))  # type: ignore
+    for year in sorted(years):
+        df_to_add = query_with_all(convert_data_to_df_mini(league, year), team)
+        if df_to_add.empty:
+            df_to_add = DataFrame(0, index=[0], columns=df_to_add.columns)
+            df_to_add["Team"] = team
+            df_to_add["Pos"] = 20
+
+        df = concat([df, df_to_add])
+
+    df["year"] = sorted(years)
+    df = df.reset_index().drop("index", axis=1)
+    df["GF"] = list(map(int, df["GF"]))
+    df["Pts"] = list(map(int, df["Pts"]))
+    df["Pos"] = list(map(int, df["Pos"]))
+    df["W"] = list(map(int, df["W"]))
+    data = DataFrame(
+        {
+            "Most goals": df.at[df["GF"].idxmax(), "GF"],
+            "Which year": df.at[df["GF"].idxmax(), "year"],
+            "Average points per season": sum(df["Pts"]) / len(df["Pts"]),
+            "Average goals per season": sum(df["GF"]) / len(df["GF"]),
+            "Highest league position": min(df["Pos"]),
+            "Most wins in a season": max(df["W"]),
+            "Most Points in a season": max(df["Pts"]),
+        },
+        index=[0],
+        dtype=object,
+    ).T
+
+    data = data.reset_index()
+    data.columns = ["Stat", "Value"]
+
+    # print(data)
+
+    return DataFrame(data)
+
+
+# general_stats("Chelsea", "Premier_League")

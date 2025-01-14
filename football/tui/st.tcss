@@ -113,7 +113,7 @@ QuitScreen {
     background: slategrey;
     width: 100%;
     color: black;
-    
+
 }
 .Tables {
     content-align: center middle;
@@ -175,7 +175,7 @@ Button {
 #league_pos {
     border: solid round green;
     width: 1fr;
-    height: 10;
+    height: 20;
 }
 # ---------------- test ------------------
 ContentSwitcher {

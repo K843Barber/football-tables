@@ -4,10 +4,11 @@ from textual import on
 from textual.app import ComposeResult
 from textual.containers import VerticalScroll
 from textual.screen import Screen
-from textual.widgets import Button, Footer, Header, Input, RadioSet
+from textual.widgets import Button, Footer, Header, Input, RadioSet, Static
 from textual_plotext import PlotextPlot
 
-from football.common.helper_functions import get_team_names, team_news
+from football.common.format_tables import enrich_tablev2
+from football.common.helper_functions import general_stats, get_team_names, team_news
 
 
 class ClubScreen(Screen):
@@ -35,6 +36,7 @@ class ClubScreen(Screen):
             self.lp.border_title = "League Position"
             yield self.lp
 
+            yield Static()
             yield Button("Back", id="back", classes="babygotback")
 
         yield Footer()
@@ -42,6 +44,17 @@ class ClubScreen(Screen):
     async def on_mount(self) -> None:
         """."""
         self.selected_team = ""
+        # table = self.query_one(DataTable)
+        # table.add_columns(*("Stat", "Value"))
+        # table.add_row(*("Highest scoring season", "2019"))
+        # table.add_row(*("Goals scored in highest scoring season", "99"))
+        # table.add_row(*("Average Points per Season", "77"))
+        # table.add_row(*("Average Goals per Season", "77"))
+        # table.add_row(*("Biggest winning margin", "99"))
+        # table.add_row(*("Team most beaten", "99"))
+        # table.add_row(*("Team most beaten by", "99"))
+        # table.add_row(*("Cleanest Season (Clean sheets)", "99"))
+        # table.add_row(*("Best Season result", "99"))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """."""
@@ -77,6 +90,9 @@ class ClubScreen(Screen):
         self.replot(self.team_name)  # type: ignore
         self.GFD.border_title = f"Goals Scored: {self.team_name}"
         self.lp.border_title = f"League Position: {self.team_name}"
+        self.query_one(Static).update(
+            enrich_tablev2(general_stats(self.team_name, self.league))  # type: ignore
+        )
         self.query_one(Input).value = ""
 
     @on(RadioSet.Changed)
