@@ -10,8 +10,6 @@ from football.common.league_page_helper import read_folders
 from football.tui.widgets.screens_file.all_time_screen import AllTime
 from football.tui.widgets.screens_file.h2h_screen import H2HScreen
 from football.tui.widgets.screens_file.individual_club import ClubScreen
-
-# IndividualTeamScreen,
 from football.tui.widgets.screens_file.league_screen import TableScreen
 from football.tui.widgets.screens_file.screens import (
     ContentScreen,

@@ -3,7 +3,7 @@
 from pathlib import Path
 
 import pandas as pd
-from pandas import DataFrame
+from pandas import DataFrame, read_csv
 
 from football.common.format_tables import enrich_tablev3
 from football.common.helper_functions import convert_data_to_df
@@ -119,3 +119,34 @@ def score_df(team: str, league: str, start: str):
 
     df1 = pd.concat([dfh, dfa])
     return df1, path
+
+
+def goal_game_distribution(league: str, s: int):
+    """."""
+    file = Path.cwd() / "refined_data" / league / f"{s}_{s + 1}_results.csv"
+
+    data = read_csv(file)
+
+    data["AG"] = data["HS"] + data["AS"]
+    ag = list(data["AG"])
+
+    df: dict = {}
+    for i in ag:
+        if i not in df:
+            df[i] = 1
+        else:
+            df[i] += 1
+
+    d = df
+    d = dict(sorted(d.items(), key=lambda item: item[0]))
+    keys, value = d.keys(), list(d.values())
+
+    # df1 = DataFrame(df, index=[0]).T
+    # df1 = df1.reset_index()
+
+    # df1.columns = ["Goals", "Frequency"]
+    # df1 = df1.sort_values(by=["Goals"])
+    return keys, value
+
+
+# goal_game_distribution("Premier_League", 2024)

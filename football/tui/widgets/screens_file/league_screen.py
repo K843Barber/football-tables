@@ -12,6 +12,7 @@ from football.common.league_page_helper import (
     generic_read,
     get_goal_conceded_graphic,
     get_goal_graphic,
+    goal_game_distribution,
     quick_read,
     read_seasons,
     season_data,
@@ -44,7 +45,10 @@ class TableScreen(Screen):
                 id="seasonal_stats",
             )
             with Vertical():
-                yield self.data
+                self.normal_dist = PlotextPlot(id="normal_dist")
+                self.normal_dist.border_title = "Normal Distribution"
+                yield self.normal_dist
+                # yield self.data
                 yield Button("Back", id="back", classes="babygotback")
 
         with Horizontal():
@@ -76,6 +80,10 @@ class TableScreen(Screen):
         self.start, end = str(event.pressed.label).split("_")
         self.table.update_df(generic_read(self.league, self.start, end))
         self.data.update(season_data(self.league, self.start, end))
+        self.Season = self.start
+        self.replot_league(self.league, int(self.Season))
+
+        self.normal_dist.border_title = f"Normal Distribution: {self.Season}"
 
     def replot(self, team: str, league: str, season: str) -> None:
         """."""
@@ -90,6 +98,14 @@ class TableScreen(Screen):
         _, key, val = get_goal_conceded_graphic(team, league, season)
         plt1.bar(key, val, color="red")
         plt1.yticks(range(0, max(val) + 1, 1))  # type: ignore
+
+    def replot_league(self, league: str, season: int) -> None:
+        """."""
+        plt2 = self.query_one("#normal_dist", PlotextPlot).plt
+        plt2.clear_data()
+        key, val = goal_game_distribution(league, season)
+        plt2.bar(key, val, color="cyan")
+        plt2.yticks(range(0, max(val) + 1, 1))  # type: ignore
 
         self.refresh()
 

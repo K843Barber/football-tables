@@ -37,24 +37,13 @@ class ClubScreen(Screen):
             yield self.lp
 
             yield Static()
-            yield Button("Back", id="back", classes="babygotback")
+        yield Button("Back", id="back", classes="babygotback")
 
         yield Footer()
 
     async def on_mount(self) -> None:
         """."""
         self.selected_team = ""
-        # table = self.query_one(DataTable)
-        # table.add_columns(*("Stat", "Value"))
-        # table.add_row(*("Highest scoring season", "2019"))
-        # table.add_row(*("Goals scored in highest scoring season", "99"))
-        # table.add_row(*("Average Points per Season", "77"))
-        # table.add_row(*("Average Goals per Season", "77"))
-        # table.add_row(*("Biggest winning margin", "99"))
-        # table.add_row(*("Team most beaten", "99"))
-        # table.add_row(*("Team most beaten by", "99"))
-        # table.add_row(*("Cleanest Season (Clean sheets)", "99"))
-        # table.add_row(*("Best Season result", "99"))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """."""

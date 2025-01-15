@@ -55,7 +55,7 @@ class ContentScreen(Screen):
             Button("Head 2 Head", id="h2h", classes="H2HINIT"),
             Button("Individual Team", id="invidual_team"),
             Button("All Time", id="allatida"),
-            Button("back", id="back"),
+            Button("Back", id="back"),
             id="what_we_got",
         )
 

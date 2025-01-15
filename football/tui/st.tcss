@@ -1,4 +1,13 @@
-# ---------------------- General Screen ----------------------
+# ---------------------- Global  ----------------------
+/* The button class */
+Button {
+    width: 1fr;
+    content-align: center middle;
+}
+ContentSwitcher {
+    width: 100%;
+    height: 8fr;
+}
 Grid {
     align: center middle;
 }
@@ -8,8 +17,27 @@ FootballDataTable {
     height:auto;
     width: auto;
 }
-# ---------------------- Quit Screen ----------------------
+#normal_dist {
+    border: solid magenta;
+}
+#season_select {
+    border: solid blue;
+    width: 20;
+}
+#seasonal_stats {
+    border: solid round aqua;
+    width: 1fr;
+}
+#goal_dist {
+    border: solid round green;
+    width: 1fr;
+}
+#goal_against {
+    border: solid round red;
+    width: 1fr;
+}
 
+# ---------------------- Quit Screen ----------------------
 QuitScreen {
     align: center middle;
 }
@@ -18,12 +46,6 @@ QuitScreen {
     height: 1fr;
     width: 1fr;
     content-align: center middle;
-}
-#yes {
-    width: 100%;
-}
-#no {
-    width: 100%;
 }
 #quit_dialog {
     grid-size: 2;
@@ -41,20 +63,8 @@ QuitScreen {
     width: 50%;
     height: 1fr;
     padding: 0 10;
-
 }
-# ---------------------- Unsorted ----------------------
-
-#season_select {
-    border: solid blue;
-    width: 20;
-}
-.team1 {
-    text-align: center;
-}
-.team2 {
-    text-align: center;
-}
+# ---------------------- h2h ----------------------
 .h2h {
     border: solid round cyan;
     height: 1fr;
@@ -75,31 +85,16 @@ QuitScreen {
     height: 20;
     border: solid round green;
 }
-#text {
-    width: 100%;
-    # border: solid round cyan;
+.base_stats {
+    border: solid aqua;
 }
-#seasonal_stats {
-    border: solid round aqua;
-    width: 1fr;
-}
-#goal_dist {
-    border: solid round green;
-    width: 1fr;
-}
-#goal_against {
-    border: solid round red;
-    width: 1fr;
-}
+
+# -------------- LeagueScreen/IndividualScreen -------------------
 .babygotback {
     width: 1fr;
     content-align: center middle;
     border: solid magenta;
 }
-.base_stats {
-    border: solid aqua;
-}
-
 # ---------------------- Content Screen ----------------------
 #what_we_got {
     height: 100%;
@@ -113,12 +108,10 @@ QuitScreen {
     background: slategrey;
     width: 100%;
     color: black;
-
 }
 .Tables {
     content-align: center middle;
 }
-
 .H2HINIT {
     background: mediumpurple;
     width: 100%;
@@ -134,6 +127,7 @@ QuitScreen {
     width: 100%;
     color: black;
 }
+# -------------------- App Page --------------------
 #main_left {
     content-align: center middle;
     width: 50%;
@@ -141,23 +135,21 @@ QuitScreen {
     padding: 0 10;
     border: solid cyan;
 }
-
-/* The button class */
-Button {
-    width: 1fr;
-    content-align: center middle;
+#text {
+    width: 100%;
 }
-
+# ------------------ All Time Screen ------------------
 #all_TT {
     content-align: center middle;
 }
 #initbruv {
     content-align: center middle;
 }
+.alltimetableframe {
+    height: 1fr;
+    border: solid magenta;
+}
 # ---------------- club page ------------------
-# #club_select {
-#     height: 0.5fr;
-# }
 #ClubPage {
     border: solid green;
 }
@@ -165,25 +157,10 @@ Button {
     border: solid round cyan;
     height: 20;
 }
-# #GA {
-#     border: solid round cyan;
-#     height: 10;
-# }
-# #club_stats {
-#     border: solid orange;
-# }
 #league_pos {
     border: solid round green;
     width: 1fr;
     height: 20;
 }
 # ---------------- test ------------------
-ContentSwitcher {
-    width: 100%;
-    height: 8fr;
-}
-.alltimetableframe {
-    height: 1fr;
-    border: solid magenta;
-}
 
