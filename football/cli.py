@@ -6,7 +6,7 @@ import sys
 from football.assets import small_logo
 from football.common import clean_me
 from football.common.helper_functions import run_on_server
-from football.get_table import get_alot, get_season
+from football.get_table import get_alot, get_season, get_specific_season
 from football.show_table import show_added_seasons, show_all_time_table, show_table
 from football.tui.interactive import interactive as intermilan
 
@@ -32,6 +32,10 @@ def main():
     get = subparsers.add_parser("get", help="Get league standings")
     get.add_argument("league", help="Choose league", type=str)
     get.add_argument("season", nargs=2, help="Choose season")
+    # --------------- Get Specific ---------------
+    get_specific = subparsers.add_parser("get_specific", help="Get league standings")
+    get_specific.add_argument("league", help="Choose league", type=str)
+    get_specific.add_argument("season", nargs=2, help="Choose season")
     # --------------- Get_many ---------------
     get_many = subparsers.add_parser("get_many", help="Get multiple seasons")
     get_many.add_argument("league", help="Choose league", type=str)
@@ -53,13 +57,20 @@ def main():
     # --------------- clean_it ---------------
     clean = subparsers.add_parser("clean", help="Clean the data")
     clean.add_argument("league", help="league")
+    # --------------- update ---------------
+    update = subparsers.add_parser("update", help="Update season")
+    update.add_argument("league", help="league")
+    update.add_argument("season", nargs=2, help="Choose season")
 
     # args = main_parser.parse_args()
     args = main_parser.parse_args(None if sys.argv[1:] else ["--help"])
+
     if args.command == "get":
         get_season(args.league, *args.season)
     elif args.command == "get_many":
         get_alot(args.league, args.season[0], args.season[1])
+    elif args.command == "get_specific":
+        get_specific_season(args.league, *args.season)
     elif args.command == "show":
         show_table(args.league, *args.season)
     elif args.command == "interactive":
@@ -71,6 +82,10 @@ def main():
     elif args.command == "all_time":
         show_all_time_table(args.league)
     elif args.command == "clean":
+        clean_me.clean_it(args.league)
+        clean_me.clean_that(args.league)
+    elif args.command == "update":
+        get_season(args.league, *args.season)
         clean_me.clean_it(args.league)
         clean_me.clean_that(args.league)
     else:

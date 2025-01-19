@@ -38,7 +38,8 @@ class AllTime(Screen):
                 table = df_to_table(df, table)
                 yield Static(table, id="all_TT")
             league_wins = league_winners(self.league)
-            yield Static(league_wins, id="initbruv")
+            with VerticalScroll(id="initbruv"):
+                yield Static(league_wins, id="initbruv")
 
         yield Button("Back", id="back")
 

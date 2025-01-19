@@ -13,7 +13,6 @@ from football.common.league_page_helper import (
     get_goal_conceded_graphic,
     get_goal_graphic,
     goal_game_distribution,
-    quick_read,
     read_seasons,
     season_data,
 )
@@ -64,7 +63,6 @@ class TableScreen(Screen):
     async def on_mount(self) -> None:
         """."""
         self.table = self.query_one(FootballDataTable)
-        self.table.add_df(quick_read(str(self.league)))
 
         self.selected_team = ""
         self.Season = ""
