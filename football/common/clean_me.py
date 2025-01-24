@@ -80,6 +80,7 @@ def results_stripping(strings: str) -> str:
         "[h]",
         "[i]",
         "[j]",
+        "[7]",
     ]
     skip_type2 = [
         "Cup Winners' Cup",
@@ -307,3 +308,7 @@ def clean_that(league: str):
 
 # clean_that("Premier_League")
 # clean_it("Football_League_First_Division")
+def rinse(league: str):
+    """Dev to clean, not for general use, since all data should be cleaned."""
+    clean_that(league)
+    clean_it(league)

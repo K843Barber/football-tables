@@ -4,6 +4,7 @@ import argparse
 from typing import Callable, NamedTuple
 
 from football.assets import other_logo
+from football.common.clean_me import rinse
 from football.common.config import configuration
 from football.common.helper_functions import run_on_server
 from football.get_table import get_alot, get_season, update_leagues
@@ -60,6 +61,9 @@ def main():
     # --------------- update ---------------
     update = subparsers.add_parser("update", help="Update season")
     update.add_argument("--league", help="league")
+    # --------------- clean ---------------
+    clean = subparsers.add_parser("clean", help="Clean data, (dev)")
+    clean.add_argument("league", help="Which league?)")
 
     args = {k.replace("-", "_"): v for k, v in vars(main_parser.parse_args()).items()}
 
@@ -76,6 +80,7 @@ def main():
         "prune": Option(prune_leagues, {}),
         "all_time": Option(show_all_time_table, {**args}),
         "update": Option(update_leagues, {}),
+        "clean": Option(rinse, {**args}),
         None: Option(main_parser.print_help, {}),
     }
 
