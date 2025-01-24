@@ -62,6 +62,24 @@ def league_winners(league: str) -> Table:
     return df_to_table(titles_df, table)
 
 
+def list_of_winners(league: str):
+    """Return DF with the winner each season."""
+    path = Path.cwd() / "refined_data" / league
+    files = path.glob("*.txt")
+
+    winners = []
+
+    for file in sorted(files):
+        winners.append([file.stem, file.read_text().split("\n")[0]])
+
+    df = DataFrame(winners)
+    df.columns = ["Season", "Winner"]
+    df["Season"] = df["Season"].str.replace("_", "-")
+    table = Table(header_style="bold cyan", border_style="dim cyan")
+
+    return df_to_table(df, table)
+
+
 # # league_winners("Premier_League")
 # seasons = [str(i) for i in range(1992, 2025)]
 # all_time_table("Premier_League", seasons)

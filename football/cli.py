@@ -1,12 +1,13 @@
 """CLI."""
 
 import argparse
-import sys
+from typing import Callable, NamedTuple
 
 from football.assets import small_logo
-from football.common import clean_me
+from football.common.config import configuration
 from football.common.helper_functions import run_on_server
-from football.get_table import get_alot, get_season, get_specific_season
+from football.get_table import get_alot, get_season, update_leagues
+from football.prune import prune_leagues
 from football.show_table import show_added_seasons, show_all_time_table, show_table
 from football.tui.interactive import interactive as intermilan
 
@@ -14,10 +15,12 @@ from football.tui.interactive import interactive as intermilan
 class MyParser(argparse.ArgumentParser):
     """."""
 
-    def error(self):
-        """."""
-        self.print_help()
-        raise SystemExit("No Arguments Given")
+
+class Option(NamedTuple):
+    """."""
+
+    function: Callable
+    kwargs: dict
 
 
 def main():
@@ -28,14 +31,12 @@ def main():
     )
     subparsers = main_parser.add_subparsers(dest="command")
 
+    # --------------- Config ---------------
+    subparsers.add_parser("config", help="Setup up leagues to get")
     # --------------- Get ---------------
     get = subparsers.add_parser("get", help="Get league standings")
     get.add_argument("league", help="Choose league", type=str)
     get.add_argument("season", nargs=2, help="Choose season")
-    # --------------- Get Specific ---------------
-    get_specific = subparsers.add_parser("get_specific", help="Get league standings")
-    get_specific.add_argument("league", help="Choose league", type=str)
-    get_specific.add_argument("season", nargs=2, help="Choose season")
     # --------------- Get_many ---------------
     get_many = subparsers.add_parser("get_many", help="Get multiple seasons")
     get_many.add_argument("league", help="Choose league", type=str)
@@ -54,43 +55,34 @@ def main():
     show_seasons.add_argument("league", help="Which league seasons you currently have")
     # --------------- internet_it ---------------
     subparsers.add_parser("internet_me", help="Show table in browser")
-    # --------------- clean_it ---------------
-    clean = subparsers.add_parser("clean", help="Clean the data")
-    clean.add_argument("league", help="league")
+    # --------------- prune ---------------
+    subparsers.add_parser("prune", help="Remove any unwanted files")
     # --------------- update ---------------
     update = subparsers.add_parser("update", help="Update season")
-    update.add_argument("league", help="league")
-    update.add_argument("season", nargs=2, help="Choose season")
+    update.add_argument("--league", help="league")
 
-    # args = main_parser.parse_args()
-    args = main_parser.parse_args(None if sys.argv[1:] else ["--help"])
+    args = {k.replace("-", "_"): v for k, v in vars(main_parser.parse_args()).items()}
 
-    if args.command == "get":
-        get_season(args.league, *args.season)
-    elif args.command == "get_many":
-        get_alot(args.league, args.season[0], args.season[1])
-    elif args.command == "get_specific":
-        get_specific_season(args.league, *args.season)
-    elif args.command == "show":
-        show_table(args.league, *args.season)
-    elif args.command == "interactive":
-        intermilan()
-    elif args.command == "show_seasons":
-        show_added_seasons(args.league)
-    elif args.command == "internet_me":
-        run_on_server()
-    elif args.command == "all_time":
-        show_all_time_table(args.league)
-    elif args.command == "clean":
-        clean_me.clean_it(args.league)
-        clean_me.clean_that(args.league)
-    elif args.command == "update":
-        get_season(args.league, *args.season)
-        clean_me.clean_it(args.league)
-        clean_me.clean_that(args.league)
-    else:
-        main_parser.print_help()
+    command = args.pop("command")
+
+    subcommand = {
+        "config": Option(configuration, {}),
+        "get": Option(get_season, {**args}),
+        "get_many": Option(get_alot, {**args}),
+        "show": Option(show_table, {**args}),
+        "interactive": Option(intermilan, {}),
+        "show_seasons": Option(show_added_seasons, {**args}),
+        "internet_me": Option(run_on_server, {}),
+        "prune": Option(prune_leagues, {}),
+        "all_time": Option(show_all_time_table, {**args}),
+        "update": Option(update_leagues, {}),
+        None: Option(main_parser.print_help, {}),
+    }
+
+    function, signature = subcommand[command]
+
+    return function(**signature)
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

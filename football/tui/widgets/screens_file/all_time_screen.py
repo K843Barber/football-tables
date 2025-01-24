@@ -6,7 +6,11 @@ from textual.containers import Horizontal, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import Button, ContentSwitcher, Header, Static
 
-from football.common.all_time_helper import all_time_table, league_winners
+from football.common.all_time_helper import (
+    all_time_table,
+    league_winners,
+    list_of_winners,
+)
 from football.common.format_tables import df_to_table
 from football.show_table import get_season_list
 
@@ -25,6 +29,7 @@ class AllTime(Screen):
         with Horizontal():
             yield Button("All Time Table", id="all_time_willies")
             yield Button("League Wins", id="initbruv")
+            yield Button("Winner By Season", id="winnerbyseason")
 
         with ContentSwitcher(initial="all_time_willies"):
             with VerticalScroll(
@@ -40,7 +45,9 @@ class AllTime(Screen):
             league_wins = league_winners(self.league)
             with VerticalScroll(id="initbruv"):
                 yield Static(league_wins, id="initbruv")
-
+            winners_each_season = list_of_winners(self.league)
+            with VerticalScroll(id="winnerbyseason"):
+                yield Static(winners_each_season, id="winnerbyseason")
         yield Button("Back", id="back")
 
     def on_mount(self):
@@ -54,4 +61,6 @@ class AllTime(Screen):
         if event.button.id == "all_time_willies":
             self.query_one(ContentSwitcher).current = event.button.id
         if event.button.id == "initbruv":
+            self.query_one(ContentSwitcher).current = event.button.id
+        if event.button.id == "winnerbyseason":
             self.query_one(ContentSwitcher).current = event.button.id

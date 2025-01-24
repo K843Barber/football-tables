@@ -234,7 +234,6 @@ def clean_it(league: str):
                     lll = correct_names(ll)
                     if lll != "":
                         rewritten_file.append(lll)
-                # print(rewritten_file)
                 rewritten_file = fix_gd(rewritten_file)
 
         # --------------------- Write the data ---------------------
@@ -272,7 +271,9 @@ def clean_that(league: str):
     """."""
     path = Path.cwd() / "data" / league
     files = path.rglob("*results.csv")
-    for file in track(files, description="[bold green]Cleaning...[/bold green]"):
+    for file in track(
+        files, description=f"[bold green]Cleaning {league}...[/bold green]"
+    ):
         tmp_df = fix_dataframe(file)
 
         corrected_file = []

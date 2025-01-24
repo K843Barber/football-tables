@@ -1,11 +1,14 @@
 """Fetch league details."""
 
+import logging
 from pathlib import Path
 from time import sleep
 
+# from typing import Callable
 import requests
 from bs4 import BeautifulSoup
 from pandas import DataFrame
+from rich import print
 from rich.progress import (
     BarColumn,
     MofNCompleteColumn,
@@ -16,35 +19,40 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 
+from football.common import clean_me
+from football.common.config import load_config
 
-def get_table(league: str, start: str, end: str) -> None:
-    """Needed to extract a season table from top five leagues.
+log = logging.getLogger(__name__)
 
-    Args:
-    ----
-        league: The league you require (PL, Bundesliga, La Liga, Ligue1, SerieA).
-        start: The year the beginning of the season occurs.
-        end: The year the end of the season occurs.
 
-    """
+def _fetch_url(league: str, start: str, end: str):
+    """."""
     if league != "Allsvenskan":
-        if start not in ("1899", "1999"):
-            url = f"https://en.wikipedia.org/wiki/{start}%E2%80%93{end[2:]}_{league}"
-        else:
-            url = f"https://en.wikipedia.org/wiki/{start}%E2%80%93{end}_{league}"
+        if league == "La_Liga" and start == "1928" and end == "1929":
+            url = f"https://en.wikipedia.org/wiki/{end}_{league}"
+        else:  # noqa: PLR5501
+            if start not in ("1899", "1999"):
+                url = f"https://en.wikipedia.org/wiki/{start}%E2%80%93{end[2:]}_{league}"
+            else:
+                url = f"https://en.wikipedia.org/wiki/{start}%E2%80%93{end}_{league}"
     else:
         url = f"https://en.wikipedia.org/wiki/{start}_{league}"
 
-    page = requests.get(url, timeout=10)
-    soup = BeautifulSoup(page.text, "html.parser")
     try:
-        tabs = soup.find("table", {"class": "wikitable", "style": "text-align:center;"})
-    except TypeError:
-        return None
+        page = requests.get(url, timeout=10)
+        page.raise_for_status()
+    except requests.exceptions.HTTPError:
+        print(f"[bold red]{start}-{end[2:]} for {league} not found[/bold red]")
+        return
 
+    return page
+
+
+def _fetch_table(soup, league, start, end) -> None:
+    tables = soup.find("table", {"class": "wikitable", "style": "text-align:center;"})
     table: list = []
 
-    rows = tabs.find_all("tr")
+    rows = tables.find_all("tr")
     for row in rows:
         for cell in row.find_all("th"):
             if cell.text.strip() != "":
@@ -63,53 +71,9 @@ def get_table(league: str, start: str, end: str) -> None:
             f.writelines(f"{i}\n")
 
 
-def get_very_specific_table(league: str, start: str, end: str) -> None:
-    """Needed to extract a season table from top five leagues.
-
-    Args:
-    ----
-        league: The league you require (PL, Bundesliga, La Liga, Ligue1, SerieA).
-        start: The year the beginning of the season occurs.
-        end: The year the end of the season occurs.
-
-    """
-    url = f"https://en.wikipedia.org/wiki/{start}_{league}"
-
-    page = requests.get(url, timeout=10)
-    soup = BeautifulSoup(page.text, "html.parser")
-    try:
-        tabs = soup.find("table", {"class": "wikitable", "style": "text-align:center;"})
-    except TypeError:
-        return None
-
-    table: list = []
-
-    rows = tabs.find_all("tr")
-    for row in rows:
-        for cell in row.find_all("th"):
-            if cell.text.strip() != "":
-                table.append(cell.text.strip())
-
-        for cell in row.find_all("td"):
-            if cell.text.strip() != "":
-                table.append(cell.text.strip())
-
-    path = Path.cwd() / "data" / league
-    path.mkdir(parents=True, exist_ok=True)
-    filepath = path / f"{int(start) - 1}_{int(end) - 1}.txt"
-
-    with filepath.open("w", encoding="utf-8") as f:
-        for i in table[10:]:
-            f.writelines(f"{i}\n")
-
-
-def get_very_specific_game_results(league: str, start: str, end: str) -> None:
-    """Get league results for all teams."""
-    url = f"https://en.wikipedia.org/wiki/{start}_{league}"
-
-    page = requests.get(url, timeout=10)
-    soup = BeautifulSoup(page.text, "html.parser")
-    tabs = soup.find(
+def _fetch_results(soup, league: str, start: str, end: str) -> None:
+    """."""
+    tables = soup.find(
         "table",
         {
             "class": "wikitable plainrowheaders",
@@ -120,54 +84,7 @@ def get_very_specific_game_results(league: str, start: str, end: str) -> None:
     lookup_table: dict = {}
     season_results: list = []
 
-    rows = tabs.find_all("tr")
-    for en, row in enumerate(rows):
-        for cell in row.find_all("th"):
-            if en == 0:
-                continue
-            if cell.text.strip("\n") not in lookup_table:
-                lookup_table[en] = cell.text.strip("\n")
-
-    for home, row in enumerate(rows):
-        for away, cell in enumerate(row.find_all("td"), start=1):
-            h, a = lookup_table[home], lookup_table[away]
-            res = cell.text.strip("\n")
-            season_results.append((h, res, a))
-
-    df = DataFrame(season_results, columns=["Home", "Result", "Away"])
-
-    df = df[df["Home"] != df["Away"]]
-    df = df[df["Result"] != ""]
-    df = df[df["Result"] != "a"]
-
-    path = Path.cwd() / "data" / league / f"{int(start) - 1}_{int(end) - 1}_results.csv"
-    df.to_csv(path, index=False)
-
-
-def get_game_results(league: str, start: str, end: str) -> None:
-    """Get league results for all teams."""
-    if league != "Allsvenskan":
-        if start not in ("1899", "1999"):
-            url = f"https://en.wikipedia.org/wiki/{start}%E2%80%93{end[2:]}_{league}"
-        else:
-            url = f"https://en.wikipedia.org/wiki/{start}%E2%80%93{end}_{league}"
-    else:
-        url = f"https://en.wikipedia.org/wiki/{start}_{league}"
-
-    page = requests.get(url, timeout=10)
-    soup = BeautifulSoup(page.text, "html.parser")
-    tabs = soup.find(
-        "table",
-        {
-            "class": "wikitable plainrowheaders",
-            "style": "text-align:center;font-size:100%;",
-        },
-    )
-
-    lookup_table: dict = {}
-    season_results: list = []
-
-    rows = tabs.find_all("tr")
+    rows = tables.find_all("tr")
     for en, row in enumerate(rows):
         for cell in row.find_all("th"):
             if en == 0:
@@ -191,38 +108,47 @@ def get_game_results(league: str, start: str, end: str) -> None:
     df.to_csv(path, index=False)
 
 
-def get_specific_season(league: str, begin: str, end: str):
-    """."""
+# --------------------------- Main table ---------------------------
+def get_table(league: str, start: str, end: str) -> None:
+    """Needed to extract a season table from top five leagues.
+
+    Args:
+    ----
+        league: The league you require (PL, Bundesliga, La Liga, Ligue1, SerieA).
+        start: The year the beginning of the season occurs.
+        end: The year the end of the season occurs.
+        advance: If no url, advance
+
+    """
+    page = _fetch_url(league, start, end)
+    if page is not None:
+        soup = BeautifulSoup(page.text, "html.parser")
+
+        _fetch_table(soup, league, start, end)
+        _fetch_results(soup, league, start, end)
+
+
+# --------------------------- Combined season getters ---------------------------
+def get_season(league: str, season: list):
+    """Fetch both table and results."""
     from rich.console import Console
 
     console = Console()
 
-    with console.status("[bold magenta]Fetching[/bold magenta]"):
-        get_very_specific_table(league, begin, end)
-        sleep(0.1)
-        get_very_specific_game_results(league, begin, end)
+    with console.status(f"[bold magenta]Fetching {league} {season}[/bold magenta]"):
+        get_table(league, *season)
         sleep(0.1)
 
-
-def get_season(league: str, begin: str, end: str):
-    """."""
-    from rich.console import Console
-
-    console = Console()
-
-    with console.status("[bold magenta]Fetching[/bold magenta]"):
-        get_table(league, begin, end)
-        sleep(0.1)
-        get_game_results(league, begin, end)
-        sleep(0.1)
+    clean_me.clean_it(league)
+    clean_me.clean_that(league)
 
 
-def get_alot(league: str, begin: str, end: str):
-    """."""
+def get_alot(league: str, season: list):
+    """Fetch several seasons tables and results."""
     progress_bar = Progress(
         SpinnerColumn(),
         TextColumn(
-            "[bold cyan]Fetching[/bold cyan][progress.percentage]{task.percentage:>3.0f}%"
+            "[bold cyan]Fetching...[/bold cyan][progress.percentage]{task.percentage:>3.0f}%"  # noqa: E501
         ),
         BarColumn(),
         MofNCompleteColumn(),
@@ -233,8 +159,16 @@ def get_alot(league: str, begin: str, end: str):
     )
 
     with progress_bar as p:
-        for num in p.track(range(int(begin), int(end) - 1, 1)):
+        for num in p.track(range(int(season[0]), int(season[1]) - 1, 1)):
             get_table(league, str(num), str(num + 1))
             sleep(0.1)
-            get_game_results(league, str(num), str(num + 1))
-            sleep(0.1)
+
+    clean_me.clean_it(league)
+    clean_me.clean_that(league)
+
+
+def update_leagues():
+    """Get leagues either from given arg or config."""
+    leagues, season = load_config()
+    for league in leagues:
+        get_season(league, [season, str(int(season) + 1)])

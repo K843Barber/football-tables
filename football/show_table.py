@@ -23,7 +23,7 @@ def show_all_time_table(league: str) -> None:
 def show_added_seasons(league: str) -> None:
     """Lazy way to show what we have in data."""
     print("showing seasons: ")
-    files = list(Path(f"data/{league}").glob("*.txt"))
+    files = list(Path(f"refined_data/{league}").glob("*.txt"))
     seasons = []
     for file in files:
         if league in str(file):
@@ -33,9 +33,9 @@ def show_added_seasons(league: str) -> None:
         console.print(f"[bold cyan]{s}")
 
 
-def show_table(league, season_start, season_end) -> None:
+def show_table(league: str, season: list) -> None:
     """Show individual league table."""
-    df = convert_data_to_df(league, season_start, season_end)
+    df = convert_data_to_df(league, *season)
     styles = league_stylings[league][str(len(df))]
     title = str(league).replace("_", " ")
-    enrich_table(df, title, season_start, season_end, styles)
+    enrich_table(df, title, *season, styles)  # type: ignore

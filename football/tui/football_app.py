@@ -70,6 +70,7 @@ class FootballApp(App):
             "all_time_willies",
             "readme",
             "invidual_team",
+            "winnerbyseason",
         ):
             self.selected_league = str(event.button.label)
             self.push_screen(ContentScreen())

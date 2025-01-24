@@ -145,6 +145,9 @@ QuitScreen {
 #initbruv {
     content-align: center middle;
 }
+#winnerbyseason {
+    content-align: center middle;
+}
 .alltimetableframe {
     height: 1fr;
     border: solid magenta;
