@@ -3,7 +3,7 @@
 import argparse
 from typing import Callable, NamedTuple
 
-from football.assets import small_logo
+from football.assets import other_logo
 from football.common.config import configuration
 from football.common.helper_functions import run_on_server
 from football.get_table import get_alot, get_season, update_leagues
@@ -26,7 +26,7 @@ class Option(NamedTuple):
 def main():
     """."""
     main_parser = MyParser(
-        description=small_logo,
+        description=other_logo,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     subparsers = main_parser.add_subparsers(dest="command")

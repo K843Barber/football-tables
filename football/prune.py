@@ -6,7 +6,6 @@ from pathlib import Path
 
 from inquirer import Checkbox, prompt
 from rich import print
-from rich.emoji import Emoji
 from rich.tree import Tree
 
 
@@ -23,7 +22,7 @@ def walk(root, depth: int = 9):
 
         for child in path.iterdir():
             if child.is_dir():
-                stack.append((child, node.add(f"{Emoji('folder')} {child.name}")))
+                stack.append((child, node.add(f"📁 {child.name}")))
             else:
                 node.add(f" [magenta] {child.name}[/magenta]")
 

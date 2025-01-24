@@ -42,7 +42,11 @@ def _fetch_url(league: str, start: str, end: str):
         page = requests.get(url, timeout=10)
         page.raise_for_status()
     except requests.exceptions.HTTPError:
-        print(f"[bold red]{start}-{end[2:]} for {league} not found[/bold red]")
+        print(
+            f"Season [bold cyan]{start}-{end[2:]}[/bold cyan] for \
+[bold dark_orange]{league}[/bold dark_orange] \
+[bold red]not found[/bold red]"
+        )
         return
 
     return page
