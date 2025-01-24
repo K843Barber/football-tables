@@ -30,6 +30,10 @@ To begin, run the following and go from there:
 football
 ```
 
+## Sample league page
+
+![image](./football/images/football_app_league.page.svg)
+
 ## TODO
 
 - Tables and stats

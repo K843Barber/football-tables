@@ -45,7 +45,7 @@ class TableScreen(Screen):
             )
             with Vertical():
                 self.normal_dist = PlotextPlot(id="normal_dist")
-                self.normal_dist.border_title = "Normal Distribution"
+                self.normal_dist.border_title = "Game goal Distribution"
                 yield self.normal_dist
                 # yield self.data
                 yield Button("Back", id="back", classes="babygotback")
@@ -81,7 +81,7 @@ class TableScreen(Screen):
         self.Season = self.start
         self.replot_league(self.league, int(self.Season))
 
-        self.normal_dist.border_title = f"Normal Distribution: {self.Season}"
+        self.normal_dist.border_title = f"Game goal Distribution: {self.Season}"
 
     def replot(self, team: str, league: str, season: str) -> None:
         """."""
