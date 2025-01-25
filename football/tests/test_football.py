@@ -39,7 +39,3 @@ async def test_other_buttons():
     async with app.run_test() as pilot:
         await pilot.click("#Tables")
         assert app.screen.name is None
-
-
-# class TestSmallest(unittest.TestCase):
-#     """."""

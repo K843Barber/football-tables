@@ -306,8 +306,6 @@ def clean_that(league: str):
         new_file.to_csv(filepath, sep=",", index=False)
 
 
-# clean_that("Premier_League")
-# clean_it("Football_League_First_Division")
 def rinse(league: str):
     """Dev to clean, not for general use, since all data should be cleaned."""
     clean_that(league)

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from numpy import reshape
-from pandas import DataFrame, Series, concat, read_csv, to_numeric
+from pandas import DataFrame, Series, concat, read_csv
 from textual_serve.server import Server
 
 
@@ -107,19 +107,6 @@ def try_convert_to_int(value):
         return value
 
 
-def convert_to_int_or_float(value):
-    try:
-        # Try to convert to float first
-        val = float(value)
-        # If the value is equivalent to an integer, return it as int
-        if val.is_integer():
-            return int(val)
-        else:
-            return val  # Leave it as float
-    except ValueError:
-        return value  # Return as is if conversion fails (e.g., non-numeric)
-
-
 def general_stats(team: str, league: str):
     """Get team info."""
     path = Path.cwd() / "refined_data" / league
@@ -161,9 +148,4 @@ def general_stats(team: str, league: str):
     data = data.reset_index()
     data.columns = ["Stat", "Value"]
 
-    # print(data)
-
     return DataFrame(data)
-
-
-# general_stats("Chelsea", "Premier_League")

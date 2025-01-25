@@ -1,14 +1,15 @@
 """Fetch league details."""
 
 import logging
+from multiprocessing import Pool
 from pathlib import Path
 from time import sleep
 
-# from typing import Callable
 import requests
 from bs4 import BeautifulSoup
 from pandas import DataFrame
 from rich import print
+from rich.console import Console
 from rich.progress import (
     BarColumn,
     MofNCompleteColumn,
@@ -23,6 +24,8 @@ from football.common import clean_me
 from football.common.config import load_config
 
 log = logging.getLogger(__name__)
+
+console = Console()
 
 
 def _fetch_url(league: str, start: str, end: str):
@@ -135,10 +138,6 @@ def get_table(league: str, start: str, end: str) -> None:
 # --------------------------- Combined season getters ---------------------------
 def get_season(league: str, season: list):
     """Fetch both table and results."""
-    from rich.console import Console
-
-    console = Console()
-
     with console.status(f"[bold magenta]Fetching {league} {season}[/bold magenta]"):
         get_table(league, *season)
         sleep(0.1)
@@ -171,8 +170,19 @@ def get_alot(league: str, season: list):
     clean_me.clean_that(league)
 
 
+def multi(league):
+    """Use for updating leagues concurrently."""
+    clean_me.clean_it(league)
+    clean_me.clean_that(league)
+
+
 def update_leagues():
     """Get leagues either from given arg or config."""
     leagues, season = load_config()
+
     for league in leagues:
-        get_season(league, [season, str(int(season) + 1)])
+        with console.status(f"[bold magenta]Fetching {league} {season}[/bold magenta]"):
+            get_table(league, season, str(int(season) + 1))
+
+    with Pool(processes=8) as pool:
+        pool.map(multi, leagues)

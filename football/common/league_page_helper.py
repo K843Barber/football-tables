@@ -141,12 +141,4 @@ def goal_game_distribution(league: str, s: int):
     d = dict(sorted(d.items(), key=lambda item: item[0]))
     keys, value = d.keys(), list(d.values())
 
-    # df1 = DataFrame(df, index=[0]).T
-    # df1 = df1.reset_index()
-
-    # df1.columns = ["Goals", "Frequency"]
-    # df1 = df1.sort_values(by=["Goals"])
     return keys, value
-
-
-# goal_game_distribution("Premier_League", 2024)

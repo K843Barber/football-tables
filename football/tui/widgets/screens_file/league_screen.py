@@ -47,7 +47,6 @@ class TableScreen(Screen):
                 self.normal_dist = PlotextPlot(id="normal_dist")
                 self.normal_dist.border_title = "Game goal Distribution"
                 yield self.normal_dist
-                # yield self.data
                 yield Button("Back", id="back", classes="babygotback")
 
         with Horizontal():
@@ -114,7 +113,7 @@ class TableScreen(Screen):
 
         self.Season = self.start
         if self.selected_team in get_team_names(self.league):
-            if self.Season != "":  # Update radioset selection and remove this need
+            if self.Season != "":
                 self.replot(self.selected_team, self.league, self.Season)
             else:
                 self.replot(self.selected_team, self.league, "2024")

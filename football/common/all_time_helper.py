@@ -78,14 +78,3 @@ def list_of_winners(league: str):
     table = Table(header_style="bold cyan", border_style="dim cyan")
 
     return df_to_table(df, table)
-
-
-# # league_winners("Premier_League")
-# seasons = [str(i) for i in range(1992, 2025)]
-# all_time_table("Premier_League", seasons)
-# print(type(get_smallest("Premier_League")))
-
-
-# df["Team"] = df["Team"].str.replace(r"\(.*\)", "", regex=True)
-# df["Pts"] = df["Pts"].str.replace(r"\[.*\]", "", regex=True)
-# df["Team"] = df["Team"].str.rstrip(" ")

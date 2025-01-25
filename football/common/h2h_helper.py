@@ -85,9 +85,6 @@ def more_deets(team1: str, team2: str, league: str) -> str | Table:
         return enrich_tablev2(stats)
 
 
-# more_deets("AC Milan", "Internazionale", "Serie_A")
-
-
 def win_lose_draw(team1: str, team2: str, league: str) -> Table | str:
     """."""
     data, team1, team2 = results_df(team1, team2, league)
@@ -126,9 +123,3 @@ def biggest_win(team1: str, team2: str, league: str) -> Table | str:
         return enrich_tablev4(DataFrame(win).T)
     else:
         return ""
-
-
-# from rich.console import Console
-
-# console = Console()
-# console.print(biggest_win("Arsenal", "Brighton & Hove Albion", "Premier_League"))
