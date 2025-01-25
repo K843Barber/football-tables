@@ -11,7 +11,7 @@ from football.common.format_tables import enrich_tablev2, enrich_tablev4
 
 def results_df(team1: str, team2: str, league: str) -> tuple[DataFrame, str, str]:
     """."""
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     paths = path.glob("*results.csv")
     total_df = []
     for path in paths:

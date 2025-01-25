@@ -12,7 +12,7 @@ from textual_serve.server import Server
 
 def get_team_names(league: str) -> list[Any]:
     """Collect team names in each league."""
-    p = Path.cwd() / "refined_data" / league
+    p = Path.cwd() / "data/leagues" / league
     paths = p.glob("*results.csv")
     total_df = []
     for path in paths:
@@ -24,7 +24,7 @@ def get_team_names(league: str) -> list[Any]:
 
 def convert_data_to_df(league: str, start: str, end: str) -> DataFrame:
     """Convert txt data to dataframe."""
-    path = Path.cwd() / "refined_data" / league / f"{start}_{end}.txt"
+    path = Path.cwd() / "data/leagues" / league / f"{start}_{end}.txt"
     data = list(path.read_text().splitlines())
     x, y = int(len(data) / 10), 10
     data = reshape(data, shape=(x, y))  # type: ignore
@@ -44,7 +44,7 @@ def run_on_server() -> None:
 
 def get_season_list(league: str) -> list:
     """."""
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     files = path.rglob("*.txt")
 
     return [file.stem.split("_")[0] for file in files]
@@ -52,7 +52,7 @@ def get_season_list(league: str) -> list:
 
 def convert_data_to_df_mini(league: str, start: str) -> DataFrame:
     """Convert txt data to dataframe."""
-    path = Path.cwd() / "refined_data" / league / f"{start}_{int(start) + 1}.txt"
+    path = Path.cwd() / "data/leagues" / league / f"{start}_{int(start) + 1}.txt"
     data = list(path.read_text().splitlines())
     x, y = int(len(data) / 10), 10
     data = reshape(data, shape=(x, y))  # type: ignore
@@ -74,7 +74,7 @@ def query_with_all(data_frame, query_string):
 
 def team_news(team: str, league: str, stat: str) -> tuple[Series, list[int]]:
     """Get team info."""
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     files = path.glob("*.txt")
     years = [file.stem.split("_")[0] for file in files]
 
@@ -109,7 +109,7 @@ def try_convert_to_int(value):
 
 def general_stats(team: str, league: str):
     """Get team info."""
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     files = path.glob("*.txt")
     years = [file.stem.split("_")[0] for file in files]
 

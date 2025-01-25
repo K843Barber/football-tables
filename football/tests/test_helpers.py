@@ -20,7 +20,7 @@ logger = logging.getLogger()
 @pytest.fixture(autouse=True)
 def clean_environment(league: str):
     """."""
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
 
     logger.info(msg="Check to see if filepath exists.")
     logger.debug(" If it exists, clean up is incorrect")
@@ -37,7 +37,7 @@ def clean_environment(league: str):
 
     yield
 
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
 
     logger.info(msg="Check to see if filepath exists")
     assert path.exists(), "folder doesn't exist"
@@ -53,11 +53,11 @@ def clean_environment(league: str):
         os.rmdir(path)
 
     logger.info(msg="Remove testing folder environment")
-    os.rmdir(Path.cwd() / "refined_data")
+    os.rmdir(Path.cwd() / "data/leagues")
 
     logger.info(msg="Ensure testing folder has been removed successfully")
     assert (
-        os.path.exists(Path.cwd() / "refined_data") is False
+        os.path.exists(Path.cwd() / "data/leagues") is False
     ), "Unsuccessfully removed testing folder"
     logger.info(msg="Folder removed successfully")
 
@@ -76,7 +76,7 @@ def change_test_dir(request, monkeypatch):
 def test_get_smallest(league: str):
     """."""
     logger.info(msg="Creating filepaths")
-    d = Path.cwd() / "refined_data" / league
+    d = Path.cwd() / "data/leagues" / league
     d.mkdir(parents=True, exist_ok=True)
     assert d.exists()
     cryptogen = SystemRandom()
@@ -108,7 +108,7 @@ def test_get_smallest(league: str):
 def test_txt_to_df(league: str):
     """."""
     logger.info(msg="Create folder")
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     path.mkdir(parents=True, exist_ok=True)
     assert path.exists()
     logger.info(msg="Define file")
@@ -134,7 +134,7 @@ def test_winners(league: str):
     """."""
     logger.info("Create txt files with data")
     logger.info(msg="Create folder")
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     path.mkdir(parents=True, exist_ok=True)
     assert path.exists()
 
@@ -170,7 +170,7 @@ def test_winners(league: str):
 def test_all_time_helperv2(league: str):
     """."""
     logger.info("Create path for files")
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     path.mkdir(parents=True, exist_ok=True)
     assert path.exists(), "Path not created"
 

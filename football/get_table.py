@@ -69,7 +69,7 @@ def _fetch_table(soup, league, start, end) -> None:
             if cell.text.strip() != "":
                 table.append(cell.text.strip())
 
-    path = Path.cwd() / "data" / league
+    path = Path.cwd() / "data/uncleansed" / league
     path.mkdir(parents=True, exist_ok=True)
     filepath = path / f"{start}_{end}.txt"
 
@@ -111,7 +111,7 @@ def _fetch_results(soup, league: str, start: str, end: str) -> None:
     df = df[df["Result"] != ""]
     df = df[df["Result"] != "a"]
 
-    path = Path.cwd() / "data" / league / f"{start}_{end}_results.csv"
+    path = Path.cwd() / "data/uncleansed" / league / f"{start}_{end}_results.csv"
     df.to_csv(path, index=False)
 
 

@@ -21,7 +21,7 @@ def generic_read(league: str, ss: str, se: str) -> DataFrame:
 
 def read_folders() -> list:
     """Collect list of leagues."""
-    path = Path.cwd() / "refined_data"
+    path = Path.cwd() / "data/leagues"
     folders = path.glob("*/")
     leagues = [i.name for i in folders]
     return sorted(leagues)
@@ -29,7 +29,7 @@ def read_folders() -> list:
 
 def read_seasons(league: str) -> list:
     """Collect list of seasons."""
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     files = path.glob("*.txt")
     seasons = [str(i.name).split(".")[0] for i in files]
     return sorted(seasons)
@@ -43,7 +43,7 @@ def season_data(league: str, ss: str, se: str) -> DataFrame:
 
     total_games = g1
 
-    path = Path.cwd() / "refined_data" / league / f"{ss}_{se}_results.csv"
+    path = Path.cwd() / "data/leagues" / league / f"{ss}_{se}_results.csv"
     df_results = DataFrame(pd.read_csv(path))
 
     home = df_results.loc[df_results["HS"] == 0].shape[0]
@@ -111,7 +111,7 @@ def get_goal_conceded_graphic(team: str, league: str, start: str):
 
 def score_df(team: str, league: str, start: str):
     """."""
-    path = Path.cwd() / "refined_data" / league / f"{start}_{int(start) + 1}_results.csv"
+    path = Path.cwd() / "data/leagues" / league / f"{start}_{int(start) + 1}_results.csv"
     df = DataFrame(pd.read_csv(path))
 
     dfh = df[df["Home"] == team]
@@ -123,7 +123,7 @@ def score_df(team: str, league: str, start: str):
 
 def goal_game_distribution(league: str, s: int):
     """."""
-    file = Path.cwd() / "refined_data" / league / f"{s}_{s + 1}_results.csv"
+    file = Path.cwd() / "data/leagues" / league / f"{s}_{s + 1}_results.csv"
 
     data = read_csv(file)
 

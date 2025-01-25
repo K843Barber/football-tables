@@ -214,7 +214,7 @@ def combine_home_and_away(problem_list: list) -> list:
 # --------------------- Loop and tidy the data ---------------------
 def clean_it(league: str):
     """."""
-    path = Path.cwd() / "data" / league
+    path = Path.cwd() / "data/uncleansed" / league
     files = path.rglob("*.txt")
 
     for file in sorted(files):
@@ -240,9 +240,9 @@ def clean_it(league: str):
         # --------------------- Write the data ---------------------
         # --------------------- Should separate ---------------------
         if league == "Football_League_First_Division":
-            new_path = Path.cwd() / "refined_data" / "Premier_League"
+            new_path = Path.cwd() / "data/leagues" / "Premier_League"
         else:
-            new_path = Path.cwd() / "refined_data" / league
+            new_path = Path.cwd() / "data/leagues" / league
 
         new_path.mkdir(parents=True, exist_ok=True)
         filepath = new_path / file.name
@@ -270,7 +270,7 @@ def fix_dataframe(file: Path) -> DataFrame:
 
 def clean_that(league: str):
     """."""
-    path = Path.cwd() / "data" / league
+    path = Path.cwd() / "data/uncleansed" / league
     files = path.rglob("*results.csv")
     for file in track(
         files, description=f"[bold green]Cleaning {league}...[/bold green]"
@@ -298,9 +298,9 @@ def clean_that(league: str):
                 row.iloc[1], row.iloc[2] = row["HS"].split("-")
 
         if league == "Football_League_First_Division":
-            new_path = Path.cwd() / "refined_data" / "Premier_League"
+            new_path = Path.cwd() / "data/leagues" / "Premier_League"
         else:
-            new_path = Path.cwd() / "refined_data" / league
+            new_path = Path.cwd() / "data/leagues" / league
         new_path.mkdir(parents=True, exist_ok=True)
         filepath = new_path / file.name
         new_file.to_csv(filepath, sep=",", index=False)

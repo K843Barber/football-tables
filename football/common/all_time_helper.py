@@ -40,7 +40,7 @@ def get_smallest(league: str) -> int:
 
 def league_winners(league: str) -> Table:
     """."""
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     files = path.rglob("*.txt")
 
     titles: dict = {}
@@ -64,7 +64,7 @@ def league_winners(league: str) -> Table:
 
 def list_of_winners(league: str):
     """Return DF with the winner each season."""
-    path = Path.cwd() / "refined_data" / league
+    path = Path.cwd() / "data/leagues" / league
     files = path.glob("*.txt")
 
     winners = []
