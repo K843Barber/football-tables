@@ -22,7 +22,7 @@ def all_time_table(league: str, seasons: list) -> DataFrame:
     all_time = DataFrame(concat(dfs))
     columns = ["Pos", "Pts", "Pld", "W", "D", "L", "GF", "GA"]
     all_time[columns] = all_time[columns].astype(int)
-    all_time["GD"] = all_time["GD"].str.replace("−", "-")
+    all_time["GD"] = all_time["GD"].str.replace("−", "-")  # noqa: RUF001
     all_time["GD"] = all_time["GD"].astype(int)
 
     new = all_time.groupby(by="Team", as_index=False).sum()
