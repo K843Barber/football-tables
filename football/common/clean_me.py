@@ -6,53 +6,15 @@ from numpy import reshape
 from pandas import DataFrame, read_csv
 from rich.progress import track
 
+from football.common.clean_me_helper import list_a, list_b, lookup_table
+
 
 # --------------------- Strip the data ---------------------
 def table_stripping(strings: str) -> str:
     """."""
-    skip_type1 = [
-        "[b]",
-        "[a]",
-        "[c]",
-        "[d]",
-        "[e]",
-        "[g]",
-        "[f]",
-        "[1]",
-        "[h]",
-        "[i]",
-        "[j]",
-    ]
-    skip_type2 = [
-        "Banned",
-        "Champions ",
-        "Chosen",
-        "Cup Winners' Cup",
-        "Did not play the next season",
-        "Disqualified",
-        "Europa ",
-        "Excluded",
-        "FA Cup Winners",
-        "Failed re-election",
-        "Intertoto",
-        "Invited",
-        "Latin Cup",
-        "League Champions",
-        "Mitropa",
-        "Not admitted",
-        "Not re-elected",
-        "Qualification",
-        "Qualified",
-        "Readmitted",
-        "Re-elected",
-        "Relegated",
-        "Relegation",
-        "Reprieved from relegation",
-        "Resigned from league",
-        "Segunda",
-        "Serie ",
-        "UEFA",
-    ]
+    skip_type1 = list_a
+    skip_type2 = list_b
+
     if strings is not None:
         if " (" in strings:
             strings = strings.split(" (")[0]
@@ -68,40 +30,9 @@ def table_stripping(strings: str) -> str:
 
 def results_stripping(strings: str) -> str:
     """."""
-    skip_type1 = [
-        "[b]",
-        "[a]",
-        "[c]",
-        "[d]",
-        "[e]",
-        "[g]",
-        "[f]",
-        "[1]",
-        "[h]",
-        "[i]",
-        "[j]",
-        "[7]",
-    ]
-    skip_type2 = [
-        "Cup Winners' Cup",
-        "Mitropa",
-        "Segunda",
-        "Qualification",
-        "Relegation",
-        "Serie ",
-        "Champions ",
-        "Europa ",
-        "Excluded",
-        "Intertoto",
-        "UEFA",
-        "Banned",
-        "Not admitted",
-        "Qualified",
-        "Invited",
-        "Latin Cup",
-        "Chosen",
-        "Readmitted",
-    ]
+    skip_type1 = list_a
+    skip_type2 = list_b
+
     if strings is not None:
         strings = strings.strip(")").strip("(")
         for ext in skip_type1:
@@ -118,63 +49,7 @@ def results_stripping(strings: str) -> str:
 
 def correct_names(strings: str):
     """."""
-    fixit: dict = {
-        "Milan": "AC Milan",
-        "Inter Milan": "Internazionale",
-        "Inter": "Internazionale",
-        "ChievoVerona": "Chievo",
-        "Paris SG": "Paris Saint-Germain",
-        "Deportivo de La Coruña": "Deportivo La Coruña",
-        "FC Barcelona": "Barcelona",
-        "CF Barcelona": "Barcelona",
-        "Valencia CF": "Valencia",
-        "Hércules CF": "Hércules",
-        "Racing de Santander": "Racing Santander",
-        "Celta de Vigo": "Celta Vigo",
-        "CD Tenerife": "Tenerife",
-        "Sevilla FC": "Sevilla",
-        "UD Salamanca": "Salamanca",
-        "RCD Espanyol": "Espanyol",
-        "SD Compostela": "Compostela",
-        "Sporting de Gijón": "Sporting Gijón",
-        "CF Extramadura": "Extramadura",
-        "CP Mérida": "Mérida",
-        "CD Logroñés": "Logroñés",
-        "AD Almería": "Almería",
-        "Alavés": "Deportivo Alavés",
-        "Albacete Balompié": "Albacete",
-        "Atlético Bilbao": "Athletic Bilbao",
-        "Betis": "Real Betis",
-        "CD Castellón": "Castellón",
-        "CD Málaga": "Málaga",
-        "CE Sabadell FC": "Sabadell",
-        "CF Extremadura": "Extremadura",
-        "Celta": "Celta Vigo",
-        "Cádiz CF": "Cádiz",
-        "Córdoba CF": "Córdoba",
-        "Elche CF": "Elche",
-        "Granada CF": "Granada",
-        "La Coruña": "Deportivo La Coruña",
-        "Pontevedra CF": "Pontevedra",
-        "RCD Español": "Español",
-        "RCD Mallorca": "Mallorca",
-        "Recreativo": "Recreativo de Huelva",
-        "Sevilla CF": "Sevilla",
-        "UD Las Palmas": "Las Palmas",
-        "The Wednesday": "Sheffield Wednesday",
-        "Leicester Fosse": "Leicester City",
-        "Accrington": "Accrington Stanley",
-        "Woolwich Arsenal": "Arsenal",
-        "Birmingham": "Birmingham City",
-        "Stoke": "Stoke City",
-        "Small Heath": "Birmingham City",
-        "Newton Heath": "Manchester United",
-        "Juventus Cisitalia": "Juventus",
-        "Ambrosiana-Inter": "Internazionale",
-        "Ambrosiana": "Internazionale",
-        "Madrid FC": "Real Madrid",
-        "Atlético Aviación": "Atlético Madrid",
-    }
+    fixit = lookup_table
     if strings in fixit:
         return fixit[strings]
     else:
@@ -229,6 +104,13 @@ def clean_it(league: str):
                     if lll != "":
                         rewritten_file.append(lll)
                 rewritten_file = combine_home_and_away(rewritten_file)
+            elif league == "Ligue_1" and file.stem == "2019_2020":
+                for line in lines:
+                    ll = table_stripping(line)
+                    lll = correct_names(ll)
+                    if lll != "":
+                        rewritten_file.append(lll)
+                del rewritten_file[10::11]
             else:
                 for line in lines:
                     ll = table_stripping(line)
@@ -272,11 +154,10 @@ def clean_that(league: str):
     """."""
     path = Path.cwd() / "data/uncleansed" / league
     files = path.rglob("*results.csv")
-    for file in track(
-        files, description=f"[bold green]Cleaning {league}...[/bold green]"
+    for file in sorted(
+        track(files, description=f"[bold green]Cleaning {league}...[/bold green]")
     ):
         tmp_df = fix_dataframe(file)
-
         corrected_file = []
         holder = file.stem.split("_r")[0].split("_")[0]
 
@@ -290,7 +171,9 @@ def clean_that(league: str):
                     val = correct_names(val)
                     if val != "":
                         corrected_file.append(val)
+
         new_file = DataFrame(reshape(corrected_file, (int(len(corrected_file) / 4), 4)))
+        new_file = new_file.dropna()
         new_file.columns = ["Home", "HS", "AS", "Away"]
 
         for _, row in new_file.iterrows():

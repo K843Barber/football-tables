@@ -135,8 +135,8 @@ def general_stats(team: str, league: str):
         {
             "Most goals": df.at[df["GF"].idxmax(), "GF"],
             "Which year": df.at[df["GF"].idxmax(), "year"],
-            "Average points per season": sum(df["Pts"]) / len(df["Pts"]),
-            "Average goals per season": sum(df["GF"]) / len(df["GF"]),
+            "Average points per season": f"{sum(df['Pts']) / len(df['Pts']):.2f}",
+            "Average goals per season": f"{sum(df['GF']) / len(df['GF']):.2f}",
             "Highest league position": min(df["Pos"]),
             "Most wins in a season": max(df["W"]),
             "Most Points in a season": max(df["Pts"]),

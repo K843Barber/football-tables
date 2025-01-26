@@ -30,6 +30,8 @@ def configuration():
             choices=[
                 "Allsvenskan",
                 "Bundesliga",
+                "Eredivisie",
+                "Football_League_First_Division",
                 "La_Liga",
                 "Ligue_1",
                 "Premier_League",

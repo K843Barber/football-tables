@@ -24,7 +24,7 @@ def walk(root, depth: int = 9):
             if child.is_dir():
                 stack.append((child, node.add(f"📁 {child.name}")))
             else:
-                node.add(f" [magenta] {child.name}[/magenta]")
+                node.add(f"📄 [magenta]{child.name}[/magenta]")
 
     return tree
 
@@ -33,7 +33,7 @@ def prune_leagues():
     """."""
     leagues = defaultdict(list)
 
-    for j in Path(".").glob("**/*"):
+    for j in Path("data/").glob("**/*"):
         leagues[".".join((*j.parts[1:-1], j.stem))].append(j)
 
     answers = prompt(

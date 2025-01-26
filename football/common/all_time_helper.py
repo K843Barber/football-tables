@@ -17,19 +17,18 @@ def all_time_table(league: str, seasons: list) -> DataFrame:
 
     dfs = []
     for season in seasons:
-        df = convert_data_to_df(league, f"{season}", f"{int(season) + 1}")
-        dfs.append(df)
+        dfs.append(convert_data_to_df(league, f"{season}", f"{int(season) + 1}"))
 
     all_time = DataFrame(concat(dfs))
     columns = ["Pos", "Pts", "Pld", "W", "D", "L", "GF", "GA"]
     all_time[columns] = all_time[columns].astype(int)
+    all_time["GD"] = all_time["GD"].str.replace("−", "-")
     all_time["GD"] = all_time["GD"].astype(int)
 
     new = all_time.groupby(by="Team", as_index=False).sum()
     df = DataFrame(new).sort_values("Pts", ascending=False).reset_index(drop=True)
     df["Pos"] = df.index + 1
     df[["Team", "Pos"]] = df[["Pos", "Team"]]
-
     return df
 
 
