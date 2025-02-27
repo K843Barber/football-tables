@@ -4,22 +4,10 @@ See football league statistics in the terminal!
 
 ## Setup
 
-Create venv for cleanliness:
+Run:
 
 ```
-python3 -m venv .venv
-```
-
-Activate it:
-
-```
-. .venv/bin/activate
-```
-
-Get dependencies:
-
-```
-python3 -m pip install -e .
+source .env/activate.sh
 ```
 
 ## Get Started
