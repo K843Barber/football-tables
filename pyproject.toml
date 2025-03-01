@@ -25,6 +25,7 @@ dependencies = [
 description = "Footingtons!"
 dynamic = ["version"]
 name = "football"
+requires-python = ">=3.10"
 
 [project.scripts]
 football = "football.__main__:main"
