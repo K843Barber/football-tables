@@ -38,13 +38,13 @@ def get_smallest(league: str) -> int:
 
 
 def league_winners(league: str) -> Table:
-    """."""
+    """Get list of winners."""
     path = Path.cwd() / "data/leagues" / league
     files = path.rglob("*.txt")
 
     titles: dict = {}
 
-    for file in sorted(files)[:-1]:
+    for file in sorted(files)[:]:
         winner = file.read_text().split("\n")[0]
         if winner in titles:
             titles[winner] += 1

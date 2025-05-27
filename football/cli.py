@@ -1,6 +1,8 @@
 """CLI."""
 
 import argparse
+
+# from importlib.metadata import version
 from typing import Callable, NamedTuple
 
 from football.assets import other_logo
@@ -24,6 +26,11 @@ class Option(NamedTuple):
     kwargs: dict
 
 
+# def versions():
+#     """."""
+#     return version("football")
+
+
 def main():
     """."""
     main_parser = MyParser(
@@ -34,6 +41,7 @@ def main():
 
     # --------------- Config ---------------
     subparsers.add_parser("config", help="Setup up leagues to get")
+    # subparsers.add_parser("version", help="Show version")
     # --------------- Get ---------------
     get = subparsers.add_parser("get", help="Get league standings")
     get.add_argument("league", help="Choose league", type=str)
@@ -81,6 +89,7 @@ def main():
         "internet_me": Option(run_on_server, {}),
         "prune": Option(prune_leagues, {}),
         "clean": Option(rinse, {**args}),
+        # "version": Option(versions, {}),
         None: Option(main_parser.print_help, {}),
     }
 

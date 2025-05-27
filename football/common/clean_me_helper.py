@@ -17,13 +17,16 @@ list_a = [
 
 
 list_b = [
+    "Allsvenskan play-offs",
     "Banned",
     "Champions ",
     "Chosen",
     "Cup Winners' Cup",
     "Did not play the next season",
     "Disqualified",
+    "Entered 1988–89 European Cup",
     "Europa ",
+    "European Cup",
     "Excluded",
     "FA Cup Winners",
     "Failed re-election",
@@ -31,6 +34,9 @@ list_b = [
     "Invited",
     "Latin Cup",
     "League Champions",
+    "League first round playoff",
+    "Merged with ADO Den Haag to form FC Den Haag",
+    "Merged with Blauw-Wit Amsterdam to form FC Amsterdam",
     "Mitropa",
     "Not admitted",
     "Not re-elected",
@@ -40,6 +46,7 @@ list_b = [
     "Qualification or relegation",
     "Qualification for the Europa League second qualifying round",
     "Qualified",
+    "Provisionally relegated to Ligue 2 or lower due to financial difficulties",
     "PPG",
     "Readmitted",
     "Re-elected",
@@ -55,6 +62,10 @@ list_b = [
 
 
 lookup_table: dict = {
+    "AZ": "AZ Alkmaar",
+    "AZ '67": "AZ Alkmaar",
+    "PSV": "PSV Eindhoven",
+    "Feijenoord": "Feyenoord",
     "Milan": "AC Milan",
     "Inter Milan": "Internazionale",
     "Inter": "Internazionale",

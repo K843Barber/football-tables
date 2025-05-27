@@ -11,3 +11,9 @@ football/common/__pycache__/
 football/tui/widgets/screens_file/__pycache__/
 .coverage
 .logs
+.freshenv/
+build/
+football.spec
+footballv2.spec
+out/
+uv.lock
